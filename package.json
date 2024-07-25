@@ -1,0 +1,23 @@
+{
+  "name": "tuberr",
+  "version": "1.0.0",
+  "description": "A video sharing platform with community posts functionality",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon sec/index.js"
+  },
+  "keywords": [
+    "javascript",
+    "backend",
+    "mongodb",
+    "react",
+    "tailwindCSS",
+    "express"
+  ],
+  "author": "Shashikant Prasad",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
