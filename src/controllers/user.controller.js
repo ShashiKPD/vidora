@@ -4,6 +4,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
+import { v2 as cloudinary } from "cloudinary";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -18,6 +19,18 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
   } catch (error) {
     throw new ApiError(500, "Something went wrong while generating access and refresh tokens")
+  }
+}
+
+// Function to extract the public_id from the URL
+function extractPublicIdFromCloudinaryUrl(url) {
+  try {
+    const parts = url.split('/');
+    const filename = parts.pop();
+    const publicId = filename.split('.').slice(0, -1).join('.');
+    return publicId;
+  } catch (error) {
+    throw new ApiError(500, "Error extracting PublicId from Cloudinary Url")
   }
 }
 
@@ -277,11 +290,19 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Avatar file is missing")
   }
 
+  const oldAvatarPublicId = extractPublicIdFromCloudinaryUrl(req?.user?.avatar)
+  const isAvatarDeleted = await cloudinary.uploader.destroy(oldAvatarPublicId)
+
+  if (!isAvatarDeleted) {
+    throw new ApiError(500, "error while deleting old avatar from cloudinary")
+  }
+
   const avatar = await uploadOnCloudinary(avatarLocalPath)
 
   if (!avatar.url) {
-    throw new ApiError(400, "Error while uploading avatar")
+    throw new ApiError(500, "Error while uploading avatar to cloudinary")
   }
+
   const user = await User.findByIdAndUpdate(
     req?.user?._id,
     {
@@ -293,6 +314,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
       new: true
     }
   ).select("-password -refreshToken")
+
 
   return res
     .status(200)
@@ -307,6 +329,13 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 
   if (!coverImageLocalPath) {
     throw new ApiError(400, "Cover image file is missing")
+  }
+
+  const oldCoverImagePublicId = extractPublicIdFromCloudinaryUrl(req?.user?.coverImage)
+  const iscoverImageDeleted = await cloudinary.uploader.destroy(oldCoverImagePublicId)
+
+  if (!iscoverImageDeleted) {
+    throw new ApiError(500, "error while deleting old cover image from cloudinary")
   }
 
   const coverImage = await uploadOnCloudinary(coverImageLocalPath)
