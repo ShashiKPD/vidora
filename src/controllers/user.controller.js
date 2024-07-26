@@ -34,7 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const { username, email, fullName, password } = req.body
 
   if ([username, email, fullName, password].some((field) =>
-    field.trim === "")) {
+    field?.trim === "" || !field)) {
     throw new ApiError(400, "All fields are required.")
   }
 
@@ -94,8 +94,11 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const { email, password, username } = req.body
 
-  if (!email.trim && !username.trim) {
+  if (!email?.trim && !username?.trim) {
     throw new ApiError(400, "username or email is required")
+  }
+  if (!password) {
+    throw new ApiError(400, "password is required")
   }
 
   const user = await User.findOne({
@@ -112,7 +115,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid user credentials")
   }
 
-  const { accessToken, refreshToken } = generateAccessAndRefreshTokens(user._id)
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id)
 
   const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
@@ -122,8 +125,8 @@ const loginUser = asyncHandler(async (req, res) => {
   }
   return res
     .status(200)
-    .cookies("accessToken", accessToken, options)
-    .cookies("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
     .json(
       new ApiResponse(
         200,
