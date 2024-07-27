@@ -5,6 +5,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
 import { v2 as cloudinary } from "cloudinary";
+import mongoose from "mongoose";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -379,7 +380,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     {
       $lookup: {
         from: "subscriptions",
-        localfield: "_id",
+        localField: "_id",
         foreignField: "channel",
         as: "subscribers"
       }
@@ -387,7 +388,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     {
       $lookup: {
         from: "subscriptions",
-        localfield: "_id",
+        localField: "_id",
         foreignField: "subscriber",
         as: "subscribedTo"
       }
@@ -434,6 +435,62 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     )
 })
 
+const getWatchHistory = asyncHandler(async (req, res) => {
+
+  const user = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(String(req.user?._id))
+      }
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "watchHistory",
+        foreignField: "_id",
+        as: "watchHistory",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    fullName: 1,
+                    username: 1,
+                    avatar: 1
+                  }
+                },
+                {
+                  $addFields: {
+                    owner: {
+                      $first: "$owner"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+        ]
+      }
+    },
+    // {// try adding this field after the user has watched some videos (hitesh didnt add this) from this line
+    //   $addFields: {
+    //     watchHistory: "$watchHistory"
+    //   }
+    // }// to this line
+  ])
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, user[0].watchHistory, "Watch history fetched successfully")
+    )
+})
+
 export {
   registerUser,
   loginUser,
@@ -444,5 +501,6 @@ export {
   updateAccountDetails,
   updateUserAvatar,
   updateUserCoverImage,
-  getUserChannelProfile
+  getUserChannelProfile,
+  getWatchHistory
 }
