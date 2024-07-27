@@ -85,7 +85,7 @@ const registerUser = asyncHandler(async (req, res) => {
   })
 
   const createdUser = await User.findById(user._id).select(
-    "-password -refreshToken"
+    "-password -refreshToken -watchHistory"
   )
 
   if (!createdUser) {
@@ -132,7 +132,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id)
 
-  const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+  const loggedInUser = await User.findById(user._id).select("-password -refreshToken -watchHistory")
 
   const options = {
     httpOnly: true,
@@ -203,7 +203,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, "Refresh token is expired or used")
     }
 
-    const { accessToken, refreshToken } = generateAccessAndRefreshTokens(user._id)
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id)
 
     const options = {
       httpOnly: true,
@@ -263,7 +263,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
   const { fullName, email } = req.body
 
   if (!fullName?.trim() && !email?.trim()) {
-    throw new ApiError(400, "No field Provided for updation")
+    throw new ApiError(400, "No field Provided for updation. Fields supported: fullName, email")
   }
 
   const user = await User.findByIdAndUpdate(
@@ -275,7 +275,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
       }
     },
     { new: true }
-  ).select("-password -refreshToken")
+  ).select("-password -refreshToken -watchHistory")
 
   return res
     .status(200)
@@ -314,7 +314,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     {
       new: true
     }
-  ).select("-password -refreshToken")
+  ).select("-password -refreshToken -watchHistory")
 
 
   return res
@@ -419,7 +419,6 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         subscribersCount: 1,
         channelsSubscribedToCount: 1,
         isUserSubscribed: 1
-
       }
     }
   ])
