@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs"
+import { ApiError } from "./ApiError.js";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -10,17 +11,17 @@ cloudinary.config({
 // Written by me (It works but ChatGPT suggested i use its function to handle edge cases)
 // https://res.cloudinary.com/<cloud_name>/image/upload/v<version>/<public_id>.<format>
 
-// function extractPublicIdFromCloudinaryUrl(url) {
-//   if (!url) return null;
-//   const urlParts = url.split('/')
+function extractPublicIdFromCloudinaryUrl(url) {
+  if (!url) return null;
+  const urlParts = url.split('/')
 
-//   if (urlParts.length < 1) return null
+  if (urlParts.length < 1) return null
 
-//   const lastPart = urlParts[urlParts.length - 1]
-//   const publicId = lastPart.split('.')?.[0]
+  const lastPart = urlParts[urlParts.length - 1]
+  const publicId = lastPart.split('.')?.[0]
 
-//   return publicId
-// }
+  return publicId
+}
 
 // Written by ChatGPT
 // Function to extract the public_id from a Cloudinary URL
@@ -33,8 +34,7 @@ const extractPublicIdFromUrl = (url) => {
     // Remove version and file extension if present
     const lastPart = publicIdParts[publicIdParts.length - 1];
     const [publicIdWithoutExtension] = lastPart.split('.');
-    publicIdParts[publicIdParts.length - 1] = publicIdWithoutExtension;
-    return publicIdParts.join('/');
+    return publicIdParts[publicIdParts.length - 1]
   }
   return null;
 };
@@ -48,21 +48,26 @@ const uploadOnCloudinary = async (localFilePath) => {
     fs.unlinkSync(localFilePath)
     return response;
   } catch (error) {
-    console.log("Failed to upload on cloudinary ", error)
+    console.log("Failed to upload on cloudinary ", error.message)
     fs.unlinkSync(localFilePath) // remove the locally stored file as the upload operation failed miserably
     return null
   }
 }
 
 // This function deleted the file from the cloudinary server (accepts url)
-const deleteFromCloudinary = async (url) => {
+const deleteFromCloudinary = async (url, resourceType = "image") => {
+  let publicId = ""
   try {
-    const publicId = extractPublicIdFromUrl(url)
-    const response = await cloudinary.uploader.destroy(publicId)
+    publicId = extractPublicIdFromCloudinaryUrl(url)
+    const response = await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType
+    })
+    if (response?.result === "not found") {
+      throw new ApiError(400, `${resourceType} resource not found`)
+    }
     return response;
   } catch (error) {
-    console.log("Error occured while deleting file from cloudinary servers ", error.message)
-    return null
+    throw new ApiError(400, `Error occured while deleting file (publicId: ${publicId}) from cloudinary server: ${error.message}`)
   }
 }
 

@@ -12,7 +12,7 @@ const videoSchema = mongoose.Schema(
       type: String,
       trim: true
     },
-    videofile: {
+    videoFile: {
       type: String,    // coudinary url
       required: true
     },
