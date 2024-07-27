@@ -3,6 +3,7 @@ import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { Video } from "../models/video.model.js"
+import { cloudinaryFileTypes } from "../constants.js"
 
 // not completed
 const getAllVideos = asyncHandler(async (req, res) => {
@@ -35,7 +36,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Failed to get the local video path")
   }
 
-  const videoFile = await uploadOnCloudinary(videoLocalPath, "video")
+  const videoFile = await uploadOnCloudinary(videoLocalPath)
 
   if (!videoFile?.url) {
     throw new ApiError(500, "Error while uploading video file to cloudinary", videoFile)
@@ -44,7 +45,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
   const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
 
   if (!thumbnail?.url) {
-    const response = await deleteFromCloudinary(videoFile.url, "video")
+    const response = await deleteFromCloudinary(videoFile.url, cloudinaryFileTypes.VIDEO)
     throw new ApiError(500, "Error while uploading video thumbnail to cloudinary", [response])
   }
 
@@ -67,5 +68,6 @@ const publishAVideo = asyncHandler(async (req, res) => {
     )
 
 })
+
 
 export { getAllVideos, publishAVideo }

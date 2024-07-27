@@ -43,7 +43,8 @@ const extractPublicIdFromUrl = (url) => {
 const uploadOnCloudinary = async (localFilePath) => {
   try {
     const response = await cloudinary.uploader.upload(localFilePath, {
-      resource_type: "auto"
+      resource_type: "auto",
+      quality: "auto"
     })
     fs.unlinkSync(localFilePath)
     return response;
@@ -71,4 +72,23 @@ const deleteFromCloudinary = async (url, resourceType = "image") => {
   }
 }
 
-export { uploadOnCloudinary, deleteFromCloudinary }
+// not working as intended
+const compressImageCloudinary = async (localFilePath) => {
+  try {
+    const response = await cloudinary.image(localFilePath, {
+      transformation: [
+        { width: 1000, crop: "scale" },
+        { quality: 35 },
+        { fetch_format: "auto" }
+      ]
+    })
+    fs.unlinkSync(localFilePath)
+    return response
+  } catch (error) {
+    fs.unlinkSync(localFilePath)
+    throw new ApiError(500, "something went wrong while compressing image", error?.message)
+  }
+}
+
+
+export { uploadOnCloudinary, deleteFromCloudinary, compressImageCloudinary }

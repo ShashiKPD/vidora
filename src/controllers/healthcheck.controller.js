@@ -1,5 +1,5 @@
 import { asyncHandler } from "../utils/asyncHandler.js"
-import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary, deleteFromCloudinary, compressImageCloudinary } from "../utils/cloudinary.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { Video } from "../models/video.model.js"
@@ -31,4 +31,20 @@ const deleteResource = asyncHandler(async (req, res) => {
     )
 })
 
-export { checkHealth, deleteResource }
+// cloudinary compress method doesnt work as intended
+const compressImage = asyncHandler(async (req, res) => {
+  const localFilePath = req?.file?.path
+
+  if (!localFilePath) {
+    throw new ApiError(400, "image is required")
+  }
+
+  const compressedImage = await compressImageCloudinary(localFilePath)
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, compressedImage, "image compressed successfully")
+    )
+})
+export { checkHealth, deleteResource, compressImage }
