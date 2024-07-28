@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { Video } from "../models/video.model.js"
 import { cloudinaryFileTypes } from "../constants.js"
+import mongoose from "mongoose";
 
 // not completed
 const getAllVideos = asyncHandler(async (req, res) => {
@@ -69,5 +70,179 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 })
 
+const getVideoById = asyncHandler(async (req, res) => {
+  const { videoId } = req.params
 
-export { getAllVideos, publishAVideo }
+  if (!mongoose.Types.ObjectId.isValid(videoId)) {
+    throw new ApiError(400, "invalid videoId")
+  }
+
+  const video = await Video.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(String(videoId))
+      }
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "video",
+        as: "likes"
+      }
+    },
+    {
+      $addFields: {
+        likeCount: {
+          $size: "$likes"
+        }
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        description: 1,
+        videoFile: 1,
+        thumbnail: 1,
+        duration: 1,
+        views: 1,
+        likeCount: 1,
+        isPublished: 1,
+        owner: 1,
+        createdAt: 1,
+        updatedAt: 1
+      }
+    }
+  ])
+
+  if (!video?.length) {
+    throw new ApiError(400, "invalid videoId: video not found")
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, video?.[0], "video details fetched successfully")
+    )
+})
+
+const updateVideo = asyncHandler(async (req, res) => {
+  const { videoId } = req.params
+  //TODO: update video details like title, description, thumbnail
+
+  if (!mongoose.Types.ObjectId.isValid(videoId)) {
+    throw new ApiError(400, "invalid videoId")
+  }
+
+  const { title, description } = req.body
+  const thumbnailLocalPath = req?.file?.path
+
+  if (!title?.trim() && !description?.trim() && !thumbnailLocalPath) {
+    throw new ApiError(400, "update fields required")
+  }
+
+  const video = await Video.findById(videoId)
+  if (!video) {
+    throw new ApiError(400, "Invalid videoId")
+  }
+
+  let thumbnail = undefined
+  if (thumbnailLocalPath) {
+    thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
+
+    if (!thumbnail?.url) {
+      throw new ApiError(500, "Error while uploading video thumbnail to cloudinary", [response])
+    }
+
+    if (video?.thumbnail) {
+      await deleteFromCloudinary(video.thumbnail, cloudinaryFileTypes.IMAGE)
+    }
+  }
+
+  const updatedVideo = await Video.findByIdAndUpdate(
+    videoId,
+    {
+      $set: {
+        title: title,
+        description: description,
+        thumbnail: thumbnail?.url
+      }
+    },
+    {
+      new: true
+    }
+  )
+  if (!updatedVideo) {
+    throw new ApiError(500, "error occured while updating video")
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, updatedVideo, "video details updated successfully")
+    )
+
+})
+
+const deleteVideo = asyncHandler(async (req, res) => {
+  const { videoId } = req.params
+  //TODO: delete video
+
+  const video = await Video.findById(videoId)
+  if (!video) {
+    throw new ApiError(400, "video not found")
+  }
+  if (video?.thumbnail) {
+    await deleteFromCloudinary(video.thumbnail, cloudinaryFileTypes.IMAGE)
+  }
+  if (video?.videoFile) {
+    await deleteFromCloudinary(video.videoFile, cloudinaryFileTypes.VIDEO)
+  }
+
+  const deletedVideo = await Video.findByIdAndDelete(videoId)
+
+  if (!deletedVideo) {
+    throw new ApiError(500, "Error while deleting user from database")
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, deletedVideo, "Deleted video successfully")
+    )
+
+})
+
+const togglePublishStatus = asyncHandler(async (req, res) => {
+  const { videoId } = req.params
+
+  if (!mongoose.Types.ObjectId.isValid(videoId)) {
+    throw new ApiError(400, "invalid videoId")
+  }
+
+  const video = await Video.findById(videoId)
+
+  if (!video) {
+    throw new ApiError(400, "invalid videoId: video not found")
+  }
+
+  video.isPublished = !video.isPublished
+
+  video.save({ validateBeforeSave: false })
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, video, `successfully toggeled isPublished`)
+    )
+})
+
+export {
+  getAllVideos,
+  publishAVideo,
+  getVideoById,
+  updateVideo,
+  deleteVideo,
+  togglePublishStatus
+}

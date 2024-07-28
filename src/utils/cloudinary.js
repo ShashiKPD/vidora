@@ -55,7 +55,7 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 }
 
-// This function deleted the file from the cloudinary server (accepts url)
+// This function deletes the file from the cloudinary server (accepts url)
 const deleteFromCloudinary = async (url, resourceType = "image") => {
   let publicId = ""
   try {
