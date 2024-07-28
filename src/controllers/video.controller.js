@@ -22,6 +22,10 @@ const getAllVideos = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid sortType")
   }
 
+  if (Number(page) != parseInt(page) || Number(limit) != parseInt(limit)) {
+    throw new ApiError(400, "Invalid page or limit")
+  }
+
   const buildSearchStage = (query) => {
     if (!query) {
       return null
@@ -48,7 +52,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
   const sortStage = buildSortStage(sortBy, sortType)
   const skipStage = { $skip: Number((page - 1) * limit) }
   const limitStage = { $limit: Number(limit) }
-
+  console.log(sortStage)
   const pipeline = []
 
   if (query) pipeline.push(searchStage)
@@ -229,9 +233,9 @@ const updateVideo = asyncHandler(async (req, res) => {
 
 })
 
+// TODO: delete comments and likes of this video
 const deleteVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params
-  //TODO: delete video
 
   const video = await Video.findById(videoId)
   if (!video) {
