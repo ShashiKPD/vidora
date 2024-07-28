@@ -7,7 +7,7 @@ import fs from "fs"
 import { cloudinaryFileTypes } from "../constants.js"
 import mongoose from "mongoose";
 
-// not completed
+//  NOT COMPLETE !! {handle showing only published videos}, {return owner details instead of ownerId}
 const getAllVideos = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, query, sortBy, sortType = "desc", userId } = req.query
 
