@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 
 //  NOT COMPLETE !! {handle showing only published videos}, {return owner details instead of ownerId}
 const getAllVideos = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 10, query, sortBy, sortType = "desc", userId } = req.query
+  const { page = 1, limit = 10, query, sortBy, sortType = "desc" } = req.query
 
   // valid sortBy values: duration, views, publishDate(createdAt)
   if (sortBy) {
@@ -48,15 +48,24 @@ const getAllVideos = asyncHandler(async (req, res) => {
     return { $sort: sortStage }
   }
 
+  const buildPublishedStage = () => {
+    return {
+      $match: {
+        $or: [{ isPublished: true }, { owner: req?.user?._id }]
+      }
+    }
+  }
+
   const searchStage = buildSearchStage(query)
   const sortStage = buildSortStage(sortBy, sortType)
+  const publishedStage = buildPublishedStage()
   const skipStage = { $skip: Number((page - 1) * limit) }
   const limitStage = { $limit: Number(limit) }
-  console.log(sortStage)
+
   const pipeline = []
 
   if (query) pipeline.push(searchStage)
-  pipeline.push(sortStage, skipStage, limitStage)
+  pipeline.push(sortStage, publishedStage, skipStage, limitStage)
 
   const videos = await Video.aggregate(pipeline)
 
@@ -273,6 +282,10 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
 
   if (!video) {
     throw new ApiError(400, "invalid videoId: video not found")
+  }
+
+  if (!video.owner.equals(req?.user._id)) {
+    throw new ApiError(401, "Unauthorized user")
   }
 
   video.isPublished = !video.isPublished
