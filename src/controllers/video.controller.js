@@ -6,6 +6,8 @@ import { Video } from "../models/video.model.js"
 import fs from "fs"
 import { cloudinaryFileTypes } from "../constants.js"
 import mongoose from "mongoose";
+import { User } from "../models/user.model.js";
+import { Subscription } from "../models/subscription.model.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, query, sortBy, sortType = "desc" } = req.query
@@ -160,7 +162,7 @@ const getVideoById = asyncHandler(async (req, res) => {
         from: "users",
         localField: "owner",
         foreignField: "_id",
-        as: "owner",
+        as: "ownerDetails",
         pipeline: [
           {
             $project: {
@@ -174,8 +176,8 @@ const getVideoById = asyncHandler(async (req, res) => {
     },
     {
       $addFields: {
-        owner: {
-          $first: "$owner"
+        ownerDetails: {
+          $first: "$ownerDetails"
         },
       }
     },
@@ -191,6 +193,7 @@ const getVideoById = asyncHandler(async (req, res) => {
         likeCount: 1,
         isPublished: 1,
         owner: 1,
+        ownerDetails: 1,
         createdAt: 1,
         updatedAt: 1
       }
@@ -199,6 +202,17 @@ const getVideoById = asyncHandler(async (req, res) => {
 
   if (!video?.length) {
     throw new ApiError(400, "invalid videoId: video not found")
+  }
+
+  const subscription = await Subscription.findOne({
+    subscriber: new mongoose.Types.ObjectId(String(req?.user._id)),
+    channel: video?.[0].owner
+  });
+
+  if (subscription != null) {
+    video[0].isUserSubscribed = true
+  } else {
+    video[0].isUserSubscribed = false
   }
 
   return res
