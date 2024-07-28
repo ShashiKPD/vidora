@@ -7,7 +7,6 @@ import fs from "fs"
 import { cloudinaryFileTypes } from "../constants.js"
 import mongoose from "mongoose";
 
-//  NOT COMPLETE !! {handle showing only published videos}, {return owner details instead of ownerId}
 const getAllVideos = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, query, sortBy, sortType = "desc" } = req.query
 
@@ -127,6 +126,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 })
 
+//  NOT COMPLETE !! add isUserSubscribed field
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params
 
@@ -153,6 +153,30 @@ const getVideoById = asyncHandler(async (req, res) => {
         likeCount: {
           $size: "$likes"
         }
+      }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              _id: 0,
+              fullName: 1,
+              avatar: 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      $addFields: {
+        owner: {
+          $first: "$owner"
+        },
       }
     },
     {
@@ -200,8 +224,13 @@ const updateVideo = asyncHandler(async (req, res) => {
   }
 
   const video = await Video.findById(videoId)
+
   if (!video) {
     throw new ApiError(400, "Invalid videoId")
+  }
+
+  if (!video.owner.equals(req?.user._id)) {
+    throw new ApiError(401, "Unauthorized user")
   }
 
   let thumbnail = undefined
