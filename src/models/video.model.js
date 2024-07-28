@@ -6,7 +6,8 @@ const videoSchema = mongoose.Schema(
     title: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      index: true
     },
     description: {
       type: String,

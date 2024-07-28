@@ -3,21 +3,64 @@ import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { Video } from "../models/video.model.js"
+import fs from "fs"
 import { cloudinaryFileTypes } from "../constants.js"
 import mongoose from "mongoose";
 
 // not completed
 const getAllVideos = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
+  const { page = 1, limit = 10, query, sortBy, sortType = "desc", userId } = req.query
 
-  const videos = await Video.find({})
+  // valid sortBy values: duration, views, publishDate(createdAt)
+  if (sortBy) {
+    if (!["duration", "views", "uploadDate"].some((value) => value === sortBy)) {
+      throw new ApiError(400, "Invalid sortBy")
+    }
+  }
+
+  if (sortType != "desc" && sortType != "asc") {
+    throw new ApiError(400, "Invalid sortType")
+  }
+
+  const buildSearchStage = (query) => {
+    if (!query) {
+      return null
+    }
+    return {
+      $search: {
+        index: "videos",  // index created in mongodb atlas named "videos"
+        text: {
+          query: query,
+          path: ["title", "description"]
+        }
+      }
+    }
+  }
+
+  const buildSortStage = (sortBy, sortType) => {
+    const sortStage = {}
+    if (sortType === "asc") sortStage[sortBy] = 1
+    if (sortType === "desc") sortStage[sortBy] = -1
+    return { $sort: sortStage }
+  }
+
+  const searchStage = buildSearchStage(query)
+  const sortStage = buildSortStage(sortBy, sortType)
+  const skipStage = { $skip: Number((page - 1) * limit) }
+  const limitStage = { $limit: Number(limit) }
+
+  const pipeline = []
+
+  if (query) pipeline.push(searchStage)
+  pipeline.push(sortStage, skipStage, limitStage)
+
+  const videos = await Video.aggregate(pipeline)
 
   return res
     .status(200)
     .json(
       new ApiResponse(200, videos, "Succesfully fetched videos")
     )
-
 })
 
 const publishAVideo = asyncHandler(async (req, res) => {
@@ -40,6 +83,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
   const videoFile = await uploadOnCloudinary(videoLocalPath)
 
   if (!videoFile?.url) {
+    fs.unlinkSync(thumbnailLocalPath)
     throw new ApiError(500, "Error while uploading video file to cloudinary", videoFile)
   }
 

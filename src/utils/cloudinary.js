@@ -1,12 +1,28 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs"
 import { ApiError } from "./ApiError.js";
+import { response } from "express";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
+const getFileSize = (localFilePath) => {
+  var stats = fs.statSync(localFilePath)
+  var fileSizeInBytes = stats.size;
+  // Convert the file size to megabytes (optional)
+  var fileSizeInMegabytes = fileSizeInBytes / (1024 * 1024);
+
+  return fileSizeInMegabytes;
+
+  // function getFilesizeInBytes(filename) {
+  //   var stats = fs.statSync(filename);
+  //   var fileSizeInBytes = stats.size;
+  //   return fileSizeInBytes;
+  // }
+}
 
 // Written by me (It works but ChatGPT suggested i use its function to handle edge cases)
 // https://res.cloudinary.com/<cloud_name>/image/upload/v<version>/<public_id>.<format>
@@ -41,10 +57,15 @@ const extractPublicIdFromUrl = (url) => {
 
 //This function uploads the file stored locally on the server to the cloudinary server
 const uploadOnCloudinary = async (localFilePath) => {
+  // check for large files
+  if (getFileSize(localFilePath) > 20) { // threshold = 20
+    return await uploadLargeFileCloudinary(localFilePath)
+  }
+
   try {
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
-      quality: "auto"
+      quality: "auto",
     })
     fs.unlinkSync(localFilePath)
     return response;
@@ -53,6 +74,29 @@ const uploadOnCloudinary = async (localFilePath) => {
     fs.unlinkSync(localFilePath) // remove the locally stored file as the upload operation failed miserably
     return null
   }
+}
+
+// Upload large files
+const uploadLargeFileCloudinary = async (localFilePath) => {
+  // From documentation: 
+  // Note There are multiple responses to a chunked upload: one after each chunk that only includes basic information plus the done : false parameter, and a full upload response that is returned after the final chunk is uploaded with done: true included in the response.
+  const response = await new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_large(localFilePath, {
+      resource_type: "auto"
+    }, (error, result) => {
+      if (error) {
+        console.log("ERROR: ", error);
+        return reject(error);
+      }
+      if (result) {
+        // console.log("RESULT: ", result);
+        return (resolve(result));
+      }
+
+    })
+  })
+  fs.unlinkSync(localFilePath);
+  return response;
 }
 
 // This function deletes the file from the cloudinary server (accepts url)
