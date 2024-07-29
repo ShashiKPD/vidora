@@ -128,7 +128,6 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 })
 
-//  NOT COMPLETE !! add isUserSubscribed field
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params
 
