@@ -17,6 +17,11 @@ const playlistSchema = new Schema(
         ref: "Video"
       }
     ],
+    privacyStatus: {
+      type: String,
+      enum: ["private", "public"],
+      default: "private"
+    },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User"
