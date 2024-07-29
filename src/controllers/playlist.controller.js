@@ -189,7 +189,7 @@ const deletePlaylist = asyncHandler(async (req, res) => {
   const playlist = await Playlist.findById(playlistId)
 
   if (!playlist) {
-    throw new ApiError(500, "something went wrong while fetching playlist from database")
+    throw new ApiError(500, "playlist doesn't exist")
   }
   // make sure its the owner trying to delete the playlist
   if (!(playlist.owner.equals(new mongoose.Types.ObjectId(String(req?.user._id))))) {
@@ -242,6 +242,36 @@ const updatePlaylist = asyncHandler(async (req, res) => {
     )
 })
 
+const togglePrivacyStatus = asyncHandler(async (req, res) => {
+  const { playlistId } = req.params
+  //  VALIDATION
+  if (!playlistId?.trim()) {
+    throw new ApiError(400, "playlistId required")
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(playlistId)) {
+    throw new ApiError(400, "Invalid playlistId")
+  }
+
+  const playlist = await Playlist.findById(playlistId)
+
+  if (!playlist) {
+    throw new ApiError(500, "playlist doesn't exist")
+  }
+  // make sure its the owner trying to delete the playlist
+  if (!(playlist.owner.equals(new mongoose.Types.ObjectId(String(req?.user._id))))) {
+    throw new ApiError(401, "Cannot toggle privacyStatus of other user's playlist")
+  }
+
+  playlist.privacyStatus = (playlist.privacyStatus === "private") ? "public" : "private";
+  await playlist.save()
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { privacyStatus: playlist.privacyStatus }, "toggled playlist privacyStatus successfully")
+    )
+})
 
 export {
   createPlaylist,
@@ -250,5 +280,6 @@ export {
   addVideoToPlaylist,
   removeVideoFromPlaylist,
   deletePlaylist,
-  updatePlaylist
+  updatePlaylist,
+  togglePrivacyStatus
 }
