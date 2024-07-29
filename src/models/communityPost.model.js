@@ -17,4 +17,4 @@ const communityPostSchema = new Schema(
 
 communityPostSchema.plugin(mongooseAggregatePaginate)
 
-export const communityPost = mongoose.model("CommunityPost", communityPostSchema)
+export const CommunityPost = mongoose.model("CommunityPost", communityPostSchema)

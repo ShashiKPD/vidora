@@ -27,6 +27,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
   // declare rsponse and data
   let responseMessage = "";
   let subscription;
+  let isSubscribed;
 
   const subscribedDoc = await Subscription.findOne({
     subscriber: currentUserId,
@@ -44,7 +45,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
       throw new ApiError(500, "something went wrong while creating subscription")
     }
     responseMessage = "User subscribed successfully"
-
+    isSubscribed = true
   } else {
     // already subscribed
     subscription = await Subscription.findByIdAndDelete(subscribedDoc._id)
@@ -52,12 +53,13 @@ const toggleSubscription = asyncHandler(async (req, res) => {
       throw new ApiError(500, "something went wrong while deleting subscription")
     }
     responseMessage = "User unsubscribed successfully"
+    isSubscribed = false
   }
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, subscription, responseMessage)
+      new ApiResponse(200, { isSubscribed }, responseMessage)
     )
 })
 

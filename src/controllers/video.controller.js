@@ -6,7 +6,6 @@ import { Video } from "../models/video.model.js"
 import fs from "fs"
 import { cloudinaryFileTypes } from "../constants.js"
 import mongoose from "mongoose";
-import { User } from "../models/user.model.js";
 import { Subscription } from "../models/subscription.model.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
@@ -57,16 +56,41 @@ const getAllVideos = asyncHandler(async (req, res) => {
     }
   }
 
+  const buildUserDetailsStage = () => {
+    return [
+      {
+        $lookup: {
+          from: "users",
+          localField: "owner",
+          foreignField: "_id",
+          as: "ownerDetails",
+          pipeline: [
+            {
+              $project: {
+                fullName: 1,
+                avatar: 1
+              }
+            }
+          ]
+        }
+      },
+      {
+        $unwind: "$ownerDetails"
+      },
+    ]
+  }
   const searchStage = buildSearchStage(query)
   const sortStage = buildSortStage(sortBy, sortType)
   const publishedStage = buildPublishedStage()
+  const userDetailsStage = buildUserDetailsStage()
+  const projectionStage = { $project: { owner: 0, __v: 0, } }
   const skipStage = { $skip: Number((page - 1) * limit) }
   const limitStage = { $limit: Number(limit) }
 
   const pipeline = []
 
   if (query) pipeline.push(searchStage)
-  pipeline.push(sortStage, publishedStage, skipStage, limitStage)
+  pipeline.push(sortStage, publishedStage, ...userDetailsStage, projectionStage, skipStage, limitStage)
 
   const videos = await Video.aggregate(pipeline)
 
