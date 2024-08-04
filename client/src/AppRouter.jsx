@@ -6,11 +6,14 @@ import {
 import Layout from "./layouts/Layout";
 import VideoCard from "./components/VideoCard"; // this is temporary
 import Home from "./pages/Home.jsx";
+import LoginComponent from "./components/Login";
 
 const AppRouter = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route path="" element={<Home />} />
+      <Route path="register" element={<RegisterComponent />} />
+      <Route path="login" element={<LoginComponent />} />
       <Route path="about" element={<span>About Page</span>} />
       <Route path="channel/:channelId" element={<span>Channel Page</span>} />
       <Route path="watch/:videoId" element={<span>Video Page</span>} />
