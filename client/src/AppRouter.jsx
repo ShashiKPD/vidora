@@ -7,6 +7,7 @@ import Layout from "./layouts/Layout";
 import VideoCard from "./components/VideoCard"; // this is temporary
 import Home from "./pages/Home.jsx";
 import LoginComponent from "./components/Login";
+import RegisterComponent from "@/components/Register";
 
 const AppRouter = createBrowserRouter(
   createRoutesFromElements(
