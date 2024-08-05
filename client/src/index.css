@@ -68,3 +68,8 @@
   }
 }
 
+
+/* Custom css components*/
+.seperator-dot::before{
+  content: ' • ';
+}

@@ -35,24 +35,6 @@ app.use("/api/v1/health-check", healthCheckRouter)
 app.use("/api/v1/playlist", playlistRouter)
 app.use("/api/v1/dashboard", dashboardRouter)
 
-import { ApiError } from "./utils/ApiError.js";
-// Error handling middleware
-app.use((err, req, res, next) => {
-  if (err instanceof ApiError) {
-    return res.status(err.statusCode).json({
-      statusCode: err.statusCode,
-      success: err.success,
-      message: err.message,
-      errors: err.errors,
-      // stack: err.stack
-    });
-  }
 
-  console.error(err); // Log the error
-  res.status(500).json({
-    success: false,
-    message: "An unexpected error occurred",
-  });
-});
 
 export { app }
