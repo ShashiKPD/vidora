@@ -17,6 +17,15 @@ export default {
       },
     },
     extend: {
+      screens: {
+        "xs": "475px"
+      },
+      transitionProperty: {
+        'margin': 'margin',
+        'width': 'width',
+        'min-width': 'min-width',
+        'max-width': 'max-width'
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
