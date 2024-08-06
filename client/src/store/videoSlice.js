@@ -12,7 +12,7 @@ const videoSlice = createSlice({
   initialState,
   reducers: {
     setVideos: (state, action) => {
-      state.videos = [...state.videos, ...action.payload.videos] // append new videos
+      state.videos = action.payload.videos // append new videos
     },
     resetVideos: (state) => {
       state.videos = []
@@ -26,7 +26,7 @@ const videoSlice = createSlice({
       })
       .addCase(fetchVideos.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.videos = [...state.videos, ...action.payload.data] // append new videos
+        state.videos = action.payload.data // append new videos
         console.log("Videos fetched", action.payload);
 
       }).addCase(fetchVideos.rejected, (state, action) => {

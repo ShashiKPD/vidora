@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  mode: "dark"
+  mode: "dark",
+  sidebar: true
 }
 
 const uiSlice = createSlice({
@@ -10,10 +11,13 @@ const uiSlice = createSlice({
   reducers: {
     toggleMode: (state) => {
       state.mode = state.mode === "dark" ? "light" : "dark"
+    },
+    toggleSidebar: (state) => {
+      state.sidebar = !state.sidebar
     }
   }
 })
 
-export const { toggleMode } = uiSlice.actions;
+export const { toggleMode, toggleSidebar } = uiSlice.actions;
 
 export default uiSlice.reducer;
