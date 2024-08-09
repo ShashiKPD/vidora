@@ -9,21 +9,21 @@ import { User } from "../models/user.model.js"
 
 const getChannelStats = asyncHandler(async (req, res) => {
   // TODO: Get the channel stats like total video views, total subscribers, total videos, total likes etc.
-  const { channelId } = req.params
+  const { channelUserName } = req.params
   //  VALIDATION
-  if (!channelId?.trim()) {
-    throw new ApiError(400, "channelId required")
+  if (!channelUserName?.trim()) {
+    throw new ApiError(400, "channel username required")
   }
 
-  if (!mongoose.Types.ObjectId.isValid(channelId)) {
-    throw new ApiError(400, "Invalid channelId")
-  }
+  // if (!mongoose.Types.ObjectId.isValid(channelId)) {
+  //   throw new ApiError(400, "Invalid channelId")
+  // }
 
-  const channel = await User.findById(channelId)
-
+  const channel = await User.findOne({ username: channelUserName.toLowerCase() })
   if (!channel) {
     throw new ApiError(500, "channel doesn't exist")
   }
+  const channelId = channel._id
 
   const videos = await Video.find({ owner: new mongoose.Types.ObjectId(String(channelId)) })
   const subscribers = await Subscription.find({ channel: new mongoose.Types.ObjectId(String(channelId)) })
@@ -57,18 +57,17 @@ const getChannelStats = asyncHandler(async (req, res) => {
 
 const getChannelVideos = asyncHandler(async (req, res) => {
   // TODO: Get all the videos uploaded by the channel
-  const { channelId } = req.params
+  const { channelUserName } = req.params
   //  VALIDATION
-  if (!channelId?.trim()) {
+  if (!channelUserName?.trim()) {
     throw new ApiError(400, "channelId required")
   }
 
-  if (!mongoose.Types.ObjectId.isValid(channelId)) {
-    throw new ApiError(400, "Invalid channelId")
-  }
+  // if (!mongoose.Types.ObjectId.isValid(channelId)) {
+  //   throw new ApiError(400, "Invalid channelId")
+  // }
 
-  const channel = await User.findById(channelId)
-
+  const channel = await User.findOne({ username: channelUserName.toLowerCase() })
   if (!channel) {
     throw new ApiError(500, "channel doesn't exist")
   }
@@ -77,7 +76,7 @@ const getChannelVideos = asyncHandler(async (req, res) => {
 
   // if it's not the owner accessing the video list, then don't show unpublished videos
   // compare function
-  const isUserTheVideoOwner = (video, userId) => (video.owner.equals(new mongoose.Types.ObjectId(String(userId))))
+  const isUserTheVideoOwner = (video, userId) => (video.owner.equals(new mongoose.Types.ObjectId(String(userId))) ? true : video.isPublished)
   //filter
   videos = videos.filter((video) => isUserTheVideoOwner(video, req?.user._id))
 

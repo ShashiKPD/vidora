@@ -9,7 +9,7 @@ const router = Router();
 
 router.use(verifyJwt);
 
-router.route("/stats/:channelId").get(getChannelStats);
-router.route("/videos/:channelId").get(getChannelVideos);
+router.route("/stats/:channelUserName").get(getChannelStats);
+router.route("/videos/:channelUserName").get(getChannelVideos);
 
 export default router
