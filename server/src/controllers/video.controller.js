@@ -193,6 +193,7 @@ const getVideoById = asyncHandler(async (req, res) => {
             $project: {
               _id: 0,
               fullName: 1,
+              username: 1,
               avatar: 1
             }
           }
@@ -245,6 +246,28 @@ const getVideoById = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(200, video?.[0], "video details fetched successfully")
     )
+})
+
+const incrementVideoView = asyncHandler(async (req, res) => {
+  const { videoId } = req.params
+
+  if (!mongoose.Types.ObjectId.isValid(videoId)) {
+    throw new ApiError(400, "invalid videoId")
+  }
+  const incrementedViewVideo = await Video.findById(videoId)
+
+  if (!incrementedViewVideo) {
+    throw new ApiError(400, "Video not found")
+  }
+
+  if (incrementedViewVideo) {
+    incrementedViewVideo.views = (incrementedViewVideo.views || 0) + 1;
+    await incrementedViewVideo.save();
+  }
+
+  res.status(200)
+    .json(new ApiResponse(200, { views: incrementedViewVideo.views }, "View incremented successfully"))
+
 })
 
 const updateVideo = asyncHandler(async (req, res) => {
@@ -371,6 +394,7 @@ export {
   getAllVideos,
   publishAVideo,
   getVideoById,
+  incrementVideoView,
   updateVideo,
   deleteVideo,
   togglePublishStatus
