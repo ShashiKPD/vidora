@@ -10,7 +10,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
   const { videoId } = req.params
   const { page = 1, limit = 10, sortBy = "likes", sortType = "desc" } = req.query
 
-  // valid sortBy values: duration, views, publishDate(createdAt)
+  // valid sortBy values: likes, date
   if (sortBy) {
     if (!["likes", "date"].some((value) => value === sortBy)) {
       throw new ApiError(400, "Invalid sortBy")
@@ -182,27 +182,35 @@ const updateComment = asyncHandler(async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(commentId)) {
     throw new ApiError(400, "Invalid commentId")
   }
+  // Verify user
+  const userIdObj = new mongoose.Types.ObjectId(String(req?.user._id))
 
-  const comment = await Comment.findByIdAndUpdate(
+  const comment = await Comment.findById(commentId)
+
+  if (comment && !(userIdObj.equals(comment.owner))) {
+    throw new ApiError(401, "Cannot Delete other user's comment")
+  }
+  // Update Comment
+  const updatedComment = await Comment.findByIdAndUpdate(
     commentId,
     { content: content },
     { new: true })
 
-  if (!comment) {
-    throw new ApiError(400, "Invalid commentId")
+  if (!updatedComment) {
+    throw new ApiError(500, "something happened while updating comment in database")
   }
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, comment, "Comment updated successfully")
+      new ApiResponse(200, updatedComment, "Comment updated successfully")
     )
 })
 
 const deleteComment = asyncHandler(async (req, res) => {
   // TODO: delete a comment
   const { commentId } = req?.params
-
+  //Validation
   if (!commentId?.trim()) {
     throw new ApiError(400, "CommentId required")
   }
@@ -210,17 +218,25 @@ const deleteComment = asyncHandler(async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(commentId)) {
     throw new ApiError(400, "Invalid commentId")
   }
+  // Verify user
+  const userIdObj = new mongoose.Types.ObjectId(String(req?.user._id))
 
-  const comment = await Comment.findByIdAndDelete(commentId)
+  const comment = await Comment.findById(commentId)
 
-  if (!comment) {
-    throw new ApiError(400, "Invalid commentId")
+  if (comment && !(userIdObj.equals(comment.owner))) {
+    throw new ApiError(401, "Cannot Delete other user's comment")
+  }
+  // delete comment
+  const deletedComment = await Comment.findByIdAndDelete(commentId)
+
+  if (!deletedComment) {
+    throw new ApiError(500, "something happened while deleting comment from database")
   }
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, comment, "comment deleted successfully")
+      new ApiResponse(200, deletedComment, "comment deleted successfully")
     )
 
 })
