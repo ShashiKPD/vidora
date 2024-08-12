@@ -20,6 +20,11 @@ export default {
       screens: {
         "xs": "475px"
       },
+      fontFamily: {
+        roboto: ['Roboto', 'sans-serif'],
+        manrope: ['Manrope', 'sans-serif'],
+        quicksand: ['Quicksand', 'sans-serif']
+      },
       transitionProperty: {
         'margin': 'margin',
         'width': 'width',
