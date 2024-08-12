@@ -77,7 +77,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const user = await User.create({
     username: username.toLowerCase(),
-    email,
+    email: email.toLowerCase(),
     password,
     fullName,
     avatar: avatar.url,
@@ -455,7 +455,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
               from: "users",
               localField: "owner",
               foreignField: "_id",
-              as: "owner",
+              as: "ownerDetails",
               pipeline: [
                 {
                   $project: {
@@ -466,14 +466,17 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                 },
                 {
                   $addFields: {
-                    owner: {
-                      $first: "$owner"
+                    ownerDetails: {
+                      $first: "$ownerDetails"
                     }
                   }
                 }
               ]
             }
           },
+          {
+            $unwind: "$ownerDetails"
+          }
         ]
       }
     },
