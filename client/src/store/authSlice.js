@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { logoutAll } from "./actions/authActions";
 
 const initialState = {
   authStatus: false,
@@ -39,7 +40,7 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.status = 'succeeded'
         state.authStatus = true
-        state.userData = action.payload
+        state.userData = action.payload.data.user
         state.accessToken = action.payload.data.accessToken
         state.refreshToken = action.payload.data.refreshToken
         state.error = null
@@ -120,6 +121,7 @@ export const logout = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     const { accessToken } = getState().auth
     try {
+      logoutAll()
       const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/users/logout", {
         method: "POST",
         headers: {
@@ -131,6 +133,7 @@ export const logout = createAsyncThunk(
       if (!data.success) {
         return rejectWithValue(data.message)
       }
+      // user successfully logged out so clear all store data using logout action
       return data
 
     } catch (error) {

@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { LOGOUT } from "./actions/authActions";
 
 const initialState = {
-  mode: "dark",
+  mode: "light",
   sidebar: true
 }
 
@@ -15,6 +16,11 @@ const uiSlice = createSlice({
     toggleSidebar: (state) => {
       state.sidebar = !state.sidebar
     }
+  }, extraReducers: (builder) => {
+    builder.addCase(LOGOUT, (state) => {
+      state.mode = "light"
+      state.sidebar = false
+    })
   }
 })
 
