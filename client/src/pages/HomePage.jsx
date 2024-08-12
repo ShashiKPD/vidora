@@ -15,10 +15,9 @@ const Home = () => {
 
   return (
     <>
-      {/* <div className="flex"> */}
-      {/* <Sidebar /> */}
-      <VideosCardView />
-      {/* </div> */}
+      <div className="flex justify-center p-2 sm:p-4">
+        <VideosCardView />
+      </div>
     </>
   );
 };

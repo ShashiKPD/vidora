@@ -28,7 +28,7 @@ const LoginComponent = () => {
   return (
     <div className="flex h-screen">
       {/* left half */}
-      <div className="w-1/2">
+      <div className="w-1/2 hidden sm:block">
         <img
           src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
           alt="left banner image"
@@ -36,7 +36,7 @@ const LoginComponent = () => {
         />
       </div>
       {/* right half */}
-      <div className="flex w-1/2 justify-center">
+      <div className="flex w-full sm:w-1/2 justify-center">
         <form
           onSubmit={handleSubmit(handleLogin)}
           className="flex flex-col gap-6 h-screen w-[70%] self-center justify-center "

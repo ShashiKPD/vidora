@@ -1,4 +1,5 @@
 import { logout } from "@/store/authSlice";
+import { logoutAll } from "@/store/actions/authActions";
 import { toggleSidebar } from "@/store/uiSlice";
 import logo from "/assets/logo-color.png";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -19,6 +20,7 @@ const Header = () => {
   };
 
   const handleLogout = () => {
+    dispatch(logoutAll());
     dispatch(logout());
   };
 
@@ -28,7 +30,7 @@ const Header = () => {
 
   if (searchPageState) {
     return (
-      <div className="fixed top-0 z-10 w-full h-full flex justify-center bg-white">
+      <div className="fixed z-40 top-0 w-full h-full flex justify-center bg-white">
         <div className="h-14 py-3 px-2 sm:px-5 w-full flex justify-center gap-2 sm:gap-5 bg-slate-100">
           <button onClick={toggleSearchPage} className="flex items-center px-2">
             <IoArrowBack className="text-2xl" />
@@ -50,7 +52,7 @@ const Header = () => {
   }
 
   return (
-    <nav className="sticky top-0 flex w-full h-16 bg-slate-100 text-black py-5 px-5  sm:px-10 justify-between items-center gap-3 sm:gap-5">
+    <nav className="sticky z-30 top-0 flex w-full h-16 bg-slate-100 text-black py-5 px-5  sm:px-10 justify-between items-center gap-3 sm:gap-5">
       <div className="flex gap-3 sm:gap-5">
         <button onClick={handleHamburger}>
           <RxHamburgerMenu className="text-2xl" />
@@ -61,7 +63,7 @@ const Header = () => {
       </div>
       {authStatus ? (
         // Hidden on screen smaller than "xs"
-        <div className="flex max-w-96 flex-grow max-xs:hidden">
+        <div className="flex max-w-lg flex-grow max-xs:hidden">
           <input
             className="w-full border border-slate-400  placeholder-gray-400 pl-5 pr-3 outline-none py-1 text-sm sm:text-base rounded-full rounded-r-none bg-transparent "
             placeholder="Search"
@@ -90,7 +92,7 @@ const Header = () => {
               className="size-7 sm:size-8 rounded-full"
             />
             <button
-              className="text-xs sm:text-sm bg-//[#ae7aff] bg-[#afb27a] text-black px-2 py-1 font-bold text-nowrap shadow-[5px_5px_0px_0px_#4f4e4e] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-100 ease-in-out"
+              className="text-xs sm:text-sm bg-//[#ae7aff] bg-[#d5d89b] hover:bg-[#e8ebad] text-black px-2 py-1 font-bold text-nowrap shadow-[5px_5px_0px_0px_#4f4e4e] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-100 ease-in-out"
               onClick={handleLogout}
             >
               Log out
@@ -98,14 +100,14 @@ const Header = () => {
           </>
         ) : (
           <>
-            {/* <Link to="/login">
+            <Link to="/login">
               <button className="px-2 py-1 hover:bg-slate-600">Login</button>
             </Link>
             <Link to="/register">
               <button className="text-sm bg-[#ae7aff] text-black px-2 py-1 font-bold shadow-[5px_5px_0px_0px_#4f4e4e] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-100 ease-in-out">
                 Sign up
               </button>
-            </Link> */}
+            </Link>
           </>
         )}
       </div>

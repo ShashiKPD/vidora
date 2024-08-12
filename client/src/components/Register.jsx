@@ -69,7 +69,7 @@ const RegisterComponent = () => {
   return (
     <div className="flex h-screen">
       {/* left half */}
-      <div className="w-1/2">
+      <div className="w-1/2 hidden sm:block">
         <img
           src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
           alt="left banner image"
@@ -77,7 +77,7 @@ const RegisterComponent = () => {
         />
       </div>
       {/* right half */}
-      <div className="flex w-1/2 justify-center">
+      <div className="flex w-full sm:w-1/2 justify-center">
         <form
           onSubmit={handleSubmit(handleRegister)}
           className="flex flex-col gap-6 h-screen w-[70%] self-center justify-center "
@@ -196,7 +196,7 @@ const RegisterComponent = () => {
                 type="file"
                 accept="image/png, image/jpg, image/jpeg, image/gif"
                 {...register("avatar", {
-                  // required: "Avatar image is required",
+                  required: "Avatar image is required",
                 })}
                 className={`${errors.image ? "border-red-500 mb-1" : "mb-4"}
                 py-2 mt-3 hidden bg-slate-200 w-full rounded-xl`}
