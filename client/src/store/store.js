@@ -2,9 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore, FLUSH, PAUSE, PERSIST, PURGE, REHYDRATE, REGISTER } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "@reduxjs/toolkit";
-import authReducer from "./authSlice";
-import videoReducer from "./videoSlice";
-import uiReducer from "./uiSlice";
+import { authReducer, videoReducer, uiReducer, playbackReducer, videoSettingsReducer, likesReducer, channelReducer, playlistReducer } from "./index"
 
 const persistConfig = {
   key: "root",
@@ -14,7 +12,12 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   videos: videoReducer,
-  ui: uiReducer
+  ui: uiReducer,
+  playback: playbackReducer,
+  videoSettings: videoSettingsReducer,
+  likes: likesReducer,
+  channel: channelReducer,
+  playlist: playlistReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

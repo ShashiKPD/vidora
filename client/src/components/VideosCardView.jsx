@@ -1,18 +1,28 @@
 import { useEffect } from "react";
 import { fetchVideos } from "@/store/videoSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { VideoCard } from "@/components";
+
+const VIDEO_REFRESH_INTERVAL = 1 * 30 * 1000; // 30 seconds in milliseconds
 
 const VideosCardView = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { videos, page, error } = useSelector((state) => state.videos);
-  const authStatus = useSelector((state) => state.auth.authStatus);
+  const { videos, page, error, lastFetched } = useSelector(
+    (state) => state.videos
+  );
   const sidebar = useSelector((state) => state.ui.sidebar);
 
   useEffect(() => {
-    dispatch(fetchVideos());
+    const now = Date.now();
+
+    if (
+      videos.length === 0 ||
+      !lastFetched ||
+      now - lastFetched > VIDEO_REFRESH_INTERVAL
+    ) {
+      dispatch(fetchVideos());
+    }
   }, []);
 
   return (
