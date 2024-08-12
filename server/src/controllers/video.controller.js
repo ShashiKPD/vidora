@@ -3,6 +3,7 @@ import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { Video } from "../models/video.model.js"
+import { User } from "../models/user.model.js";
 import fs from "fs"
 import { cloudinaryFileTypes } from "../constants.js"
 import mongoose from "mongoose";
@@ -104,10 +105,14 @@ const getAllVideos = asyncHandler(async (req, res) => {
 })
 
 const publishAVideo = asyncHandler(async (req, res) => {
-  const { title, description } = req.body
+  const { title, description, isPublished = true } = req.body
 
   if (!title?.trim()) {
     throw new ApiError(400, "Video title is required")
+  }
+  console.log(typeof isPublished)
+  if (typeof isPublished !== 'boolean') {
+    throw new ApiError(400, "isPublished must be a boolean")
   }
 
   const videoLocalPath = req?.files?.videoFile?.[0].path
@@ -141,7 +146,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
       videoFile: videoFile.url,
       thumbnail: thumbnail.url,
       duration: videoFile?.duration || 0,
-      isPublished: true,
+      isPublished: isPublished,
       owner: req?.user?._id
     }
   )
@@ -264,6 +269,14 @@ const incrementVideoView = asyncHandler(async (req, res) => {
     incrementedViewVideo.views = (incrementedViewVideo.views || 0) + 1;
     await incrementedViewVideo.save();
   }
+
+  const user = await User.findById(req?.user._id)
+  const videoIdObj = new mongoose.Types.ObjectId(String(videoId))
+  // Remove the video ID from the history if it exists
+  user.watchHistory = user.watchHistory.filter(id => !id.equals(videoIdObj));
+  // Add the video ID to the end of the history array
+  user.watchHistory.push(videoIdObj);
+  await user.save();
 
   res.status(200)
     .json(new ApiResponse(200, { views: incrementedViewVideo.views }, "View incremented successfully"))
