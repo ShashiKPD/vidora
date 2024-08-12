@@ -124,6 +124,7 @@ const getAllComments = asyncHandler(async (req, res) => {
             $project: {
               _id: 0,
               fullName: 1,
+              username: 1,
               avatar: 1
             }
           }

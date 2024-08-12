@@ -21,7 +21,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
 
   const channel = await User.findOne({ username: channelUserName.toLowerCase() })
   if (!channel) {
-    throw new ApiError(500, "channel doesn't exist")
+    throw new ApiError(400, "channel doesn't exist")
   }
   const channelId = channel._id
 
@@ -40,8 +40,15 @@ const getChannelStats = asyncHandler(async (req, res) => {
   );
   const totalChannelVideoLikes = likeCounts.reduce((total, count) => total + count, 0);
 
+  const subscription = await Subscription.findOne({
+    subscriber: new mongoose.Types.ObjectId(String(req?.user._id)),
+    channel: new mongoose.Types.ObjectId(String(channelId))
+  });
+
   const data = {
     _id: channelId,
+    channelName: channel.fullName,
+    isUserSubscribed: subscription != null,
     videoCount: videos.length,
     totalVideoViews: videos.reduce((totalView, currentVideo) => totalView + currentVideo.views, 0),
     subscriberCount: subscribers.length,
@@ -69,7 +76,7 @@ const getChannelVideos = asyncHandler(async (req, res) => {
 
   const channel = await User.findOne({ username: channelUserName.toLowerCase() })
   if (!channel) {
-    throw new ApiError(500, "channel doesn't exist")
+    throw new ApiError(400, "channel doesn't exist")
   }
 
   let videos = await Video.find({ owner: channel })
