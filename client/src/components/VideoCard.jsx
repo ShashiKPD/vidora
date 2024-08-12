@@ -1,51 +1,91 @@
-import { formatDistanceToNow } from "date-fns";
-import more from "../../public/Icons/more.png";
-import tickMark from "../../public/Icons/tick-mark.png";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaCircleCheck } from "react-icons/fa6";
+import { formatDateToNow } from "@/utils/helper";
+import { useEffect, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 
 const VideoCard = ({
   video: { createdAt, title, duration, views, _id, ownerDetails, thumbnail },
 }) => {
-  const formattedDate = formatDistanceToNow(new Date(createdAt), {
-    addSuffix: true,
-  });
+  const formattedDate = formatDateToNow(createdAt);
+  const [isAtChannel, setIsAtChannel] = useState(false);
+
+  useEffect(() => {
+    // Not rendering Owner details for channel page
+    const currentPath = window.location.pathname;
+    // Check if the current path starts with '/channel' and ensure it's not followed by more segments
+    const isAtChannel =
+      currentPath.startsWith("/channel") &&
+      (currentPath === "/channel" || currentPath.split("/").length === 3);
+    setIsAtChannel(isAtChannel);
+  }, []);
 
   return (
     <>
-      {/* <div className="flex w-full justify-center h-[100vh] bg-slate-300"> */}
       <div className="flex flex-col max-w-96">
-        <img
-          src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-          // src={thumbnail}
-          alt=""
-          className="w-auto mb-2 aspect-video object-cover rounded-xl"
-        />
-        <div className="flex justify-around gap-3">
+        <Link to={`/watch/${_id}`}>
           <img
-            src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=126&h=75&dpr=1"
-            // src={ownerDetails.avatar}
-            alt="Profile img"
-            className="size-10 rounded-full"
+            // src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            src={thumbnail}
+            alt=""
+            className="w-auto aspect-video object-cover rounded-xl"
           />
-          <div className="flex-grow">
-            <p className="text-black flex-grow font-sans font-semibold text-wrap line-clamp-2 leading-5">
-              {title}
-            </p>
-            <div className="flex items-center gap-1">
-              <h3 className="text-gray-600 p-0">{ownerDetails.fullName}</h3>
-              <FaCircleCheck className="text-xs mt-[3px] text-gray-600" />
-            </div>
-            <p className="text-gray-600 leading-none">
-              {views} Views<span className="seperator-dot"></span>
-              {formattedDate}
-            </p>
+        </Link>
+        <div className="flex justify-around">
+          {/* This doesn't render in channel page */}
+          {!isAtChannel && (
+            <Link
+              to={`/channel/${ownerDetails?.username}`}
+              className="pt-3 pr-2 shrink-0"
+            >
+              <img
+                src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=126&h=75&dpr=1"
+                // src={ownerDetails.avatar}
+                alt="Profile img"
+                className="size-10 rounded-full"
+              />
+            </Link>
+          )}
+          <div className="flex-grow font-quicksand">
+            <Link to={`/watch/${_id}`}>
+              <p className="pt-3 text-black flex-grow font-semibold text-wrap line-clamp-2 leading-5">
+                {title}
+              </p>
+            </Link>
+            {/* This doesn't render in channel page */}
+            {!isAtChannel && (
+              <div className="flex items-center">
+                <Link
+                  to={`/channel/${ownerDetails?.username}`}
+                  className="flex items-center group hover:font-semibold text-slate-600"
+                >
+                  <h3 className=" p-0 pr-1">{ownerDetails?.fullName}</h3>
+                  <FaCircleCheck className="text-xs group-hover:text-slate-800" />
+                </Link>
+                <Link to={`/watch/${_id}`} className="flex-grow h-6">
+                  <div className="w-full h-full"></div>
+                </Link>
+              </div>
+            )}
+            <Link to={`/watch/${_id}`} className="flex-grow h-6">
+              <p
+                className={`${
+                  isAtChannel ? "text-sm" : "leading-none"
+                } text-gray-600`}
+              >
+                {views} Views<span className="seperator-dot"></span>
+                {formattedDate}
+              </p>
+            </Link>
           </div>
-          {/* <BsThreeDotsVertical className="text-4xl mt-[-5px]" /> */}
-          <BsThreeDotsVertical className="text-xl " />
+          {/* This doesn't render in channel page */}
+          {!isAtChannel && (
+            <div>
+              <BsThreeDotsVertical className="text-xl mt-1" />
+            </div>
+          )}
         </div>
       </div>
-      {/* </div> */}
     </>
   );
 };
