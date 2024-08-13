@@ -1,6 +1,6 @@
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaCircleCheck } from "react-icons/fa6";
-import { formatDateToNow } from "@/utils/helper";
+import { cookingToast, formatDateToNow } from "@/utils/helper";
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
@@ -39,16 +39,16 @@ const VideoCard = ({
               className="pt-3 pr-2 shrink-0"
             >
               <img
-                src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=126&h=75&dpr=1"
-                // src={ownerDetails.avatar}
+                // src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=126&h=75&dpr=1"
+                src={ownerDetails?.avatar}
                 alt="Profile img"
-                className="size-10 rounded-full"
+                className="size-10 rounded-full object-cover"
               />
             </Link>
           )}
           <div className="flex-grow font-quicksand">
             <Link to={`/watch/${_id}`}>
-              <p className="pt-3 text-black flex-grow font-semibold text-wrap line-clamp-2 leading-5">
+              <p className="pt-2 text-black flex-grow font-semibold text-wrap line-clamp-2 leading-5">
                 {title}
               </p>
             </Link>
@@ -81,7 +81,9 @@ const VideoCard = ({
           {/* This doesn't render in channel page */}
           {!isAtChannel && (
             <div>
-              <BsThreeDotsVertical className="text-xl mt-1" />
+              <button onClick={() => cookingToast()}>
+                <BsThreeDotsVertical className="text-xl mt-2" />
+              </button>
             </div>
           )}
         </div>

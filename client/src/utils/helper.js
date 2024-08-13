@@ -1,5 +1,5 @@
 import { formatDistanceToNow, format } from "date-fns";
-
+import { enqueueSnackbar } from "notistack";
 
 const formatDateToNow = (createdAt) => formatDistanceToNow(new Date(createdAt), {
   addSuffix: true,
@@ -19,6 +19,8 @@ function publicIdFromCloudinaryUrl(url) {
   return publicId
 }
 
+const cookingToast = (message = "This functionality is cooking 🍚") => {
+  enqueueSnackbar(message, { variant: 'normal' });
+}
 
-
-export { formatDate, formatDateToNow, publicIdFromCloudinaryUrl }
+export { formatDate, formatDateToNow, publicIdFromCloudinaryUrl, cookingToast }

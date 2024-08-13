@@ -16,17 +16,17 @@ const ThumbnailPreview = ({ thumbnailFile, maxSize }) => {
   }, [thumbnailFile]);
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full md:px-5 ">
       <img
         src={thumbnailUrl}
         alt="thumbnail url"
-        className="aspect-video w-full object-cover"
+        className="aspect-video w-full object-cover border-2 border-slate-400"
       />
-      <div className="py-3">
+      <div className="py-3 text-sm line-clamp-2">
         <p className="">{thumbnailFile.name}</p>
-        <p className="text-xs text-slate-400">
+        {/* <p className="text-xs text-slate-400">
           Thumbnail will be cropped to fit 16:9 aspect ratio
-        </p>
+        </p> */}
         <p className="font-semibold text-sm text-slate-400">
           {thumbnailFile?.size && (thumbnailFile.size / 1024).toFixed(0)} KB
         </p>

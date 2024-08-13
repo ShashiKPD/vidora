@@ -1,4 +1,5 @@
 import { fetchChannelStats } from "@/store/channelSlice";
+import { cookingToast } from "@/utils/helper";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -79,9 +80,10 @@ const ChannelDetails = () => {
       />
       <div className="flex gap-2 sm:gap-3">
         <img
-          src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-          alt="Channel banner"
-          className="size-16 sm:size-24 md:size-32 lg:size-36 xl:size-40 rounded-full"
+          // src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+          src={userData.avatar}
+          alt="Profile image"
+          className="size-16 sm:size-24 md:size-32 lg:size-36 xl:size-40 rounded-full object-cover"
         />
         <div className="flex flex-col gap-2 justify-center font-manrope w-full">
           <div className="mb-1 sm:mb-3">
@@ -133,13 +135,22 @@ const ChannelDetails = () => {
           <button className="h-full w-full">Videos</button>
         </NavLink>
 
-        <button className="px-2 py-1 text-sm sm:text-base rounded-md hover:bg-violet-200 active:hover:bg-violet-300">
+        <button
+          onClick={() => cookingToast()}
+          className="px-2 py-1 text-sm sm:text-base rounded-md hover:bg-violet-200 active:hover:bg-violet-300"
+        >
           Playlists
         </button>
-        <button className="px-2 py-1 text-sm sm:text-base rounded-md hover:bg-violet-200 active:hover:bg-violet-300">
+        <button
+          onClick={() => cookingToast()}
+          className="px-2 py-1 text-sm sm:text-base rounded-md hover:bg-violet-200 active:hover:bg-violet-300"
+        >
           Community Posts
         </button>
-        <button className="px-2 py-1 text-sm sm:text-base rounded-md hover:bg-violet-200 active:hover:bg-violet-300">
+        <button
+          onClick={() => cookingToast()}
+          className="px-2 py-1 text-sm sm:text-base rounded-md hover:bg-violet-200 active:hover:bg-violet-300"
+        >
           Subscribed
         </button>
       </div>

@@ -8,11 +8,12 @@ import { CiSearch } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { cookingToast } from "@/utils/helper";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const authStatus = useSelector((state) => state.auth.authStatus);
+  const { authStatus, userData } = useSelector((state) => state.auth);
   const [searchPageState, setSearchPageState] = useState(false);
 
   const handleHamburger = () => {
@@ -41,7 +42,10 @@ const Header = () => {
                 className="w-full border border-slate-400  placeholder-gray-400 pl-3 sm:pl-5 pr-3 outline-none py-1 text-sm sm:text-base rounded-full rounded-r-none bg-transparent "
                 placeholder="Search"
               />
-              <button className="bg-slate-400 px-3 sm:px-4 rounded-r-full">
+              <button
+                onClick={() => cookingToast()}
+                className="bg-slate-400 px-3 sm:px-4 rounded-r-full"
+              >
                 <CiSearch className="sm:text-2xl" />
               </button>
             </div>
@@ -68,7 +72,10 @@ const Header = () => {
             className="w-full border border-slate-400  placeholder-gray-400 pl-5 pr-3 outline-none py-1 text-sm sm:text-base rounded-full rounded-r-none bg-transparent "
             placeholder="Search"
           />
-          <button className="bg-slate-400 px-3 sm:px-4 rounded-r-full">
+          <button
+            onClick={() => cookingToast()}
+            className="bg-slate-400 px-3 sm:px-4 rounded-r-full"
+          >
             <CiSearch className="sm:text-2xl" />
           </button>
         </div>
@@ -86,10 +93,10 @@ const Header = () => {
               <CiSearch className="text-2xl" />
             </button>
             <img
-              src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=126&h=75&dpr=1"
-              // src={ownerDetails.avatar}
+              // src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=126&h=75&dpr=1"
+              src={userData.avatar}
               alt="Profile img"
-              className="size-7 sm:size-8 rounded-full"
+              className="size-7 sm:size-8 rounded-full object-cover"
             />
             <button
               className="text-xs sm:text-sm bg-//[#ae7aff] bg-[#d5d89b] hover:bg-[#e8ebad] text-black px-2 py-1 font-bold text-nowrap shadow-[5px_5px_0px_0px_#4f4e4e] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-100 ease-in-out"

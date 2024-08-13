@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Header, Footer, Sidebar } from "@/components";
+import { Header, Footer, Sidebar, SidebarOverlay } from "@/components";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -19,6 +19,7 @@ function Layout() {
       <Header />
       {/* <div className="flex flex-1"> */}
       <Sidebar />
+      <SidebarOverlay />
       <main
         className={`flex-1 p-1 ml-0 transition-margin duration-300 ease-in-out ${
           sidebar ? "xs:ml-24 md:ml-56" : "md:ml-24"
@@ -27,7 +28,7 @@ function Layout() {
         <Outlet />
       </main>
       {/* </div> */}
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

@@ -2,7 +2,7 @@ import Header from "@/components/Header/Header"
 import Footer from "@/components/Footer/Footer"
 import Login from "./Login"
 import Register from "./Register"
-import Sidebar from "./Sidebar"
+import Sidebar from "./Sidebar/Sidebar"
 import VideoCard from "./VideoCard"
 import VideoCardHorizontal from "./Playback/VideoCardHorizontal"
 import VideosCardView from "./VideosCardView"
@@ -20,6 +20,7 @@ import VideoUploadForm from "./Channel/VideoUploadForm"
 import VideoPreview from "./Channel/VideoPreview"
 import ThumbnailPreview from "./Channel/ThumbnailPreview"
 import ToggleSwitch from "./ToggleSwitch"
+import SidebarOverlay from "./Sidebar/SidebarOverlay"
 
 export {
   Header,
@@ -43,5 +44,6 @@ export {
   VideoUploadForm,
   VideoPreview,
   ThumbnailPreview,
-  ToggleSwitch
+  ToggleSwitch,
+  SidebarOverlay
 }
