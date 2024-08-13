@@ -80,8 +80,8 @@ const registerUser = asyncHandler(async (req, res) => {
     email: email.toLowerCase(),
     password,
     fullName,
-    avatar: avatar.url,
-    coverImage: coverImage?.url || ""
+    avatar: avatar.secure_url,
+    coverImage: coverImage?.secure_url || ""
   })
 
   const createdUser = await User.findById(user._id).select(
@@ -301,7 +301,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 
   const avatar = await uploadOnCloudinary(avatarLocalPath)
 
-  if (!avatar.url) {
+  if (!avatar.secure_url) {
     throw new ApiError(500, "Error while uploading avatar to cloudinary")
   }
 
@@ -309,7 +309,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     req?.user?._id,
     {
       $set: {
-        avatar: avatar.url
+        avatar: avatar.secure_url
       }
     },
     {
@@ -342,14 +342,14 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 
   const coverImage = await uploadOnCloudinary(coverImageLocalPath)
 
-  if (!coverImage.url) {
+  if (!coverImage.secure_url) {
     throw new ApiError(400, "Error while uploading coverImage")
   }
   const user = await User.findByIdAndUpdate(
     req?.user?._id,
     {
       $set: {
-        coverImage: coverImage.url
+        coverImage: coverImage.secure_url
       }
     },
     {

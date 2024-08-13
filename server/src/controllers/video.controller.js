@@ -127,15 +127,15 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
   const videoFile = await uploadOnCloudinary(videoLocalPath)
 
-  if (!videoFile?.url) {
+  if (!videoFile?.secure_url) {
     fs.unlinkSync(thumbnailLocalPath)
     throw new ApiError(500, "Error while uploading video file to cloudinary", videoFile)
   }
 
   const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
 
-  if (!thumbnail?.url) {
-    const response = await deleteFromCloudinary(videoFile.url, cloudinaryFileTypes.VIDEO)
+  if (!thumbnail?.secure_url) {
+    const response = await deleteFromCloudinary(videoFile.secure_url, cloudinaryFileTypes.VIDEO)
     throw new ApiError(500, "Error while uploading video thumbnail to cloudinary", [response])
   }
 
@@ -143,8 +143,8 @@ const publishAVideo = asyncHandler(async (req, res) => {
     {
       title,
       description: description ? description : "",
-      videoFile: videoFile.url,
-      thumbnail: thumbnail.url,
+      videoFile: videoFile.secure_url,
+      thumbnail: thumbnail.secure_url,
       duration: videoFile?.duration || 0,
       isPublished: isPublished,
       owner: req?.user?._id
@@ -312,7 +312,7 @@ const updateVideo = asyncHandler(async (req, res) => {
   if (thumbnailLocalPath) {
     thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
 
-    if (!thumbnail?.url) {
+    if (!thumbnail?.secure_url) {
       throw new ApiError(500, "Error while uploading video thumbnail to cloudinary", [response])
     }
 
@@ -327,7 +327,7 @@ const updateVideo = asyncHandler(async (req, res) => {
       $set: {
         title: title,
         description: description,
-        thumbnail: thumbnail?.url
+        thumbnail: thumbnail?.secure_url
       }
     },
     {
