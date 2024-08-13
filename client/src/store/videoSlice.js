@@ -62,7 +62,7 @@ export const fetchVideos = createAsyncThunk(
     }
 
     try {
-      const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/videos", {
+      const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/videos" + "?sortBy=views&sortType=desc&page=1&limit=50", {
         headers: {
           "Authorization": `Bearer ${auth.accessToken}`
         }
