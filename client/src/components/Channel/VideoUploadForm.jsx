@@ -67,8 +67,8 @@ const VideoUploadForm = () => {
   };
 
   return (
-    <div className="bg-black bg-opacity-50  flex justify-center items-center  absolute z-30 top-0 bottom-0 left-0 right-0 w-full h-full">
-      <div className="bg-white h-[90%] lg:w-[1000px] rounded-3xl">
+    <div className="bg-black bg-opacity-50 flex justify-center items-center absolute z-30 top-0 left-0 right-0 bottom-0  w-full h-full">
+      <div className="bg-white min-h-[90%] max-h-[98%] overflow-y-auto lg:w-[1000px] md:w-[700px] sm:w-[550px] w-96 mx-2 rounded-3xl">
         <div className="flex py-3 pl-5 pr-3 bg-violet-50 rounded-t-3xl">
           <p className="text-3xl w-full">Video Details</p>
           <button onClick={() => navigate(`/channel/${username}`)}>
@@ -77,9 +77,9 @@ const VideoUploadForm = () => {
         </div>
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
-          className="p-4 flex flex-col font-manrope gap-3 justify-between"
+          className="p-4 flex flex-col w-full font-manrope gap-3 justify-between"
         >
-          <div className="flex gap-5 font-manrope">
+          <div className="flex flex-col md:flex-row gap-5 font-manrope">
             <div className="w-full h-full">
               <label htmlFor="title-input" className="block text-gray-700">
                 Title:
@@ -107,7 +107,7 @@ const VideoUploadForm = () => {
                 id="description-input"
                 // value={description}
                 // onChange={handleChange}
-                rows="10" // Adjust the number of visible rows
+                rows="5" // Adjust the number of visible rows
                 {...register("description", {})}
                 className="w-full border border-gray-300 p-2 bg-slate-100 rounded-xl"
                 placeholder="Enter your description here"
@@ -118,8 +118,8 @@ const VideoUploadForm = () => {
                 </p>
               )}
             </div>
-            <div className="w-[450px] flex flex-col gap-5">
-              <div className="min-h-64">
+            <div className="w-full md:w-[40%] md:min-w-56 sm:min-w-40 flex max-xs:flex-col md:flex-col gap-5">
+              <div className="min-h-64 max-md:w-[50%] max-xs:w-full max-xs:min-h-full">
                 <label
                   htmlFor="video-file"
                   className="flex flex-col cursor-pointer items-center justify-center border-2 pt-2 mt-1 text-center w-full h-full bg-slate-100 border-slate-300 rounded-xl"
@@ -132,10 +132,10 @@ const VideoUploadForm = () => {
                   ) : (
                     <>
                       <IoCloudUpload className="text-5xl text-slate-600" />
-                      <span className="underline underline-offset-1 text-slate-700">
+                      <span className="underline underline-offset-1 text-slate-700 text-sm xs:text-base">
                         Select Video to upload
                       </span>{" "}
-                      <span className="block text-slate-400">
+                      <span className="block text-slate-400 pb-2 text-sm xs:text-base">
                         MP4, OGG, WEBM
                       </span>
                     </>
@@ -148,13 +148,13 @@ const VideoUploadForm = () => {
                   {...register("video", {
                     required: "Video is required",
                   })}
-                  className="sr-only"
+                  className="hidden"
                 />
                 {errors.video && (
                   <p className="text-red-500 text-sm">{errors.video.message}</p>
                 )}
               </div>
-              <div className="min-h-64">
+              <div className="min-h-64 max-md:w-[50%] max-xs:w-full max-xs:min-h-full">
                 <label
                   htmlFor="thumbnail-image"
                   className="flex flex-col items-center justify-center border-2 pt-2 mt-1 text-center w-full h-full bg-slate-100 border-slate-300 rounded-xl"
@@ -167,10 +167,10 @@ const VideoUploadForm = () => {
                   ) : (
                     <>
                       <FaPhotoVideo className="text-5xl text-slate-600" />
-                      <span className="underline underline-offset-1 text-slate-700">
+                      <span className="underline underline-offset-1 text-slate-700 text-sm xs:text-base">
                         Click to upload thumbnail
                       </span>{" "}
-                      <p className="text-sm text-slate-400 ">
+                      <p className="text-slate-400 pb-2 text-sm xs:text-base">
                         Preferred aspect ratio 16:9
                         <span className="block">PNG, JPG, JPEG</span>
                       </p>
@@ -186,14 +186,13 @@ const VideoUploadForm = () => {
                     required: "Thumbnail image is required",
                   })}
                   className={`${errors.image ? "border-red-500 mb-1" : "mb-4"}
-                py-2 mt-3 sr-only bg-slate-200 w-full rounded-xl`}
+                py-2 mt-3 hidden bg-slate-200 w-full rounded-xl`}
                 />
                 {errors.thumbnail && (
                   <p className="text-red-500 text-sm">
                     {errors.thumbnail.message}
                   </p>
                 )}
-                {/* <ToggleSwitch /> */}
               </div>
             </div>
           </div>
