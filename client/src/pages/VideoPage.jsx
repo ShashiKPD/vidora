@@ -7,6 +7,7 @@ import {
   VideoPlayer,
   CommentSection,
   LikeAndSubscribe,
+  LoadingScreen,
 } from "@/components";
 import { formatDate, formatDateToNow } from "@/utils/helper";
 import { fetchVideo } from "@/store/playbackSlice";
@@ -34,11 +35,7 @@ const VideoPage = () => {
   }, [video]);
 
   if (isLoading) {
-    return (
-      <div className="w-full h-[calc(100vh-96px)] flex flex-col justify-center text-center px-5">
-        <p className="text-3xl">LOADING...</p>
-      </div>
-    );
+    return <LoadingScreen className={"mt-[400px]"} />;
   }
 
   if (!video) {

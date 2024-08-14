@@ -5,10 +5,12 @@ import {
 } from "@/components";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 const ChannelPage = () => {
-  const sidebar = useSelector((state) => state.ui.sidebar);
+  const sidebar = useSelector((store) => store.ui.sidebar);
+  const { username } = useParams();
+  const { userData } = useSelector((store) => store.auth);
   const location = useLocation();
   const locationPath = location.pathname;
   const uploadVideo = locationPath.endsWith("/upload");
@@ -21,7 +23,7 @@ const ChannelPage = () => {
   return (
     <div className="w-full px-2 sm:px-3 flex justify-center">
       {/* {Upload video} */}
-      {uploadVideo && <VideoUploadForm />}
+      {uploadVideo && username === userData.username && <VideoUploadForm />}
       <div
         className={`${
           sidebar

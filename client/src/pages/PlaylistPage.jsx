@@ -88,6 +88,7 @@ const PlaylistPage = () => {
           </button>
         </div>
       </div>
+      {/* Right Part */}
       <VideoListView liked={listId === "LL"} />
     </div>
   );

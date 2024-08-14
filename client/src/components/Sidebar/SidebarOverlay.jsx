@@ -36,7 +36,7 @@ const SidebarOverlay = () => {
       {sidebar && (
         <button
           onClick={() => dispatch(toggleSidebar())}
-          className="max-xs:block hidden fixed opacity-35 top-0 bottom-0 left-0 right-0 h-full w-full bg-black"
+          className="max-xs:block hidden fixed z-10 opacity-35 top-0 bottom-0 left-0 right-0 h-full w-full bg-black"
         >
           sdfkjbdfksdfs
         </button>

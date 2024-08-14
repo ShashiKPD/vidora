@@ -59,7 +59,7 @@ const VideoListView = ({ liked = false, history = false, playlistId }) => {
   }
 
   return (
-    <div className="flex-col gap-0 flex">
+    <div className="flex-col gap-0 flex flex-grow">
       {videos
         .slice()
         .reverse()
