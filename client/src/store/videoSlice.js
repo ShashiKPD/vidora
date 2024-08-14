@@ -25,6 +25,9 @@ const videoSlice = createSlice({
       state.status = 'idle'
       state.error = null
       state.lastFetched = null;
+    },
+    setQuery: (state, action) => {
+      state.query = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -86,5 +89,5 @@ export const fetchVideos = createAsyncThunk(
   }
 )
 
-export const { setVideos, resetVideos } = videoSlice.actions
+export const { setVideos, resetVideos, setQuery } = videoSlice.actions
 export default videoSlice.reducer
