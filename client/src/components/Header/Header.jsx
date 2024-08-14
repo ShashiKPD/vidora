@@ -4,13 +4,20 @@ import { toggleSidebar } from "@/store/uiSlice";
 import logo from "/assets/logo-color.png";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoArrowBack } from "react-icons/io5";
-import { CiSearch } from "react-icons/ci";
+import { CiFilter, CiSearch } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { useState } from "react";
 import { cookingToast } from "@/utils/helper";
+import { toggleFilterBox } from "@/store/uiSlice";
 
 const Header = () => {
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { authStatus, userData } = useSelector((state) => state.auth);
@@ -82,7 +89,7 @@ const Header = () => {
       ) : (
         <></>
       )}
-      <div className="flex gap-3 sm:gap-5">
+      <div className="flex gap-3 sm:gap-5 relative">
         {authStatus ? (
           <>
             {/* hidden in larger devices (bigger than "sm" */}
@@ -92,6 +99,13 @@ const Header = () => {
             >
               <CiSearch className="text-2xl" />
             </button>
+            {/* Filter Button */}
+            {location.pathname === "/" && (
+              <button onClick={() => dispatch(toggleFilterBox())}>
+                <CiFilter className="text-2xl" />
+              </button>
+            )}
+
             <img
               // src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=126&h=75&dpr=1"
               src={userData.avatar}

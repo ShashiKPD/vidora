@@ -21,6 +21,7 @@ import VideoPreview from "./Channel/VideoPreview"
 import ThumbnailPreview from "./Channel/ThumbnailPreview"
 import ToggleSwitch from "./ToggleSwitch"
 import SidebarOverlay from "./Sidebar/SidebarOverlay"
+import FilterBox from "./FilterBox"
 
 export {
   Header,
@@ -45,5 +46,6 @@ export {
   VideoPreview,
   ThumbnailPreview,
   ToggleSwitch,
-  SidebarOverlay
+  SidebarOverlay,
+  FilterBox
 }

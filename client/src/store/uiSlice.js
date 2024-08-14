@@ -3,7 +3,8 @@ import { LOGOUT } from "./actions/authActions";
 
 const initialState = {
   mode: "light",
-  sidebar: true
+  sidebar: true,
+  filterBox: false
 }
 
 const uiSlice = createSlice({
@@ -15,6 +16,9 @@ const uiSlice = createSlice({
     },
     toggleSidebar: (state) => {
       state.sidebar = !state.sidebar
+    },
+    toggleFilterBox: (state) => {
+      state.filterBox = !state.filterBox
     }
   }, extraReducers: (builder) => {
     builder.addCase(LOGOUT, (state) => {
@@ -24,6 +28,6 @@ const uiSlice = createSlice({
   }
 })
 
-export const { toggleMode, toggleSidebar } = uiSlice.actions;
+export const { toggleMode, toggleSidebar, toggleFilterBox } = uiSlice.actions;
 
 export default uiSlice.reducer;

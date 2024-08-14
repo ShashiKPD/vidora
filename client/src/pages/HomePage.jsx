@@ -1,5 +1,5 @@
-import { Sidebar, VideosCardView } from "@/components";
-import { useEffect } from "react";
+import { FilterBox, VideosCardView } from "@/components";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -15,6 +15,7 @@ const Home = () => {
 
   return (
     <>
+      <FilterBox />
       <div className="flex justify-center p-2 sm:p-4">
         <VideosCardView />
       </div>

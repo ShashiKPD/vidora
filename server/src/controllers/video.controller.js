@@ -33,7 +33,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
     }
     return {
       $search: {
-        index: "videos",  // index created in mongodb atlas named "videos"
+        index: "videos",  // index manually created in mongodb atlas named "videos"
         text: {
           query: query,
           path: ["title", "description"]
