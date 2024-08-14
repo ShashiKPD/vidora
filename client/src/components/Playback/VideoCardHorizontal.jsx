@@ -1,7 +1,7 @@
 import { formatDistanceToNow } from "date-fns";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaCircleCheck, FaLessThan } from "react-icons/fa6";
-import { formatDateToNow } from "@/utils/helper";
+import { cookingToast, formatDateToNow } from "@/utils/helper";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -74,9 +74,9 @@ const VideoCardHorizontal = ({
             </Link>
           </div>
         </div>
-        <div>
+        <button onClick={() => cookingToast()} className="flex">
           <BsThreeDotsVertical className="text-xl mt-1" />
-        </div>
+        </button>
       </div>
     </>
   );
