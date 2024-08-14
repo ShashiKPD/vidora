@@ -15,6 +15,7 @@ import {
 import { useState } from "react";
 import { cookingToast } from "@/utils/helper";
 import { toggleFilterBox } from "@/store/uiSlice";
+import { SearchBar } from "..";
 
 const Header = () => {
   const location = useLocation();
@@ -74,19 +75,20 @@ const Header = () => {
       </div>
       {authStatus ? (
         // Hidden on screen smaller than "xs"
-        <div className="flex max-w-lg flex-grow max-xs:hidden">
-          <input
-            className="w-full border border-slate-400  placeholder-gray-400 pl-5 pr-3 outline-none py-1 text-sm sm:text-base rounded-full rounded-r-none bg-transparent "
-            placeholder="Search"
-          />
-          <button
-            onClick={() => cookingToast()}
-            className="bg-slate-400 px-3 sm:px-4 rounded-r-full"
-          >
-            <CiSearch className="sm:text-2xl" />
-          </button>
-        </div>
+        <SearchBar />
       ) : (
+        // <div className="flex max-w-lg flex-grow max-xs:hidden">
+        //   <input
+        //     className="w-full border border-slate-400  placeholder-gray-400 pl-5 pr-3 outline-none py-1 text-sm sm:text-base rounded-full rounded-r-none bg-transparent "
+        //     placeholder="Search"
+        //   />
+        //   <button
+        //     onClick={() => cookingToast()}
+        //     className="bg-slate-400 px-3 sm:px-4 rounded-r-full"
+        //   >
+        //     <CiSearch className="sm:text-2xl" />
+        //   </button>
+        // </div>
         <></>
       )}
       <div className="flex gap-3 sm:gap-5 relative">

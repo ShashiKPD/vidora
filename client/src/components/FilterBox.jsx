@@ -1,24 +1,25 @@
 import { toggleFilterBox } from "@/store/uiSlice";
 import { fetchVideos } from "@/store/videoSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
 const FilterBox = () => {
   const location = useLocation();
   const { filterBox } = useSelector((store) => store.ui);
+  const { query } = useSelector((store) => store.videos);
   const [sortBy, setSortBy] = useState("views");
   const [sortType, setSortType] = useState("desc");
-  const [limit, setLimit] = useState(1);
+  const [limit, setLimit] = useState(10);
   const dispatch = useDispatch();
   const searchParams = {
     sortBy: "views", // "duration" | "views" | "uploadDate"
     sortType: "desc",
     page: 1,
     limit: 50,
+    query: "",
   };
 
-  console.log(location.pathname !== "/");
   if (location.pathname !== "/") {
     return <></>;
   }
@@ -37,8 +38,19 @@ const FilterBox = () => {
     searchParams.sortBy = sortBy;
     searchParams.sortType = sortType;
     searchParams.limit = limit;
+    searchParams.query = query;
     dispatch(fetchVideos(searchParams));
   };
+
+  useEffect(() => {
+    if (query) {
+      searchParams.sortBy = sortBy;
+      searchParams.sortType = sortType;
+      searchParams.limit = limit;
+      searchParams.query = query;
+      dispatch(fetchVideos(searchParams));
+    }
+  }, [query]);
 
   const handleLimitInput = (e) => {
     setLimit(e.target.value);
@@ -126,7 +138,7 @@ const FilterBox = () => {
           onClick={onSubmit}
           className={`h-full bg-[#d5d89b] hover:bg-[#e8ebad] py-1 px-3 rounded-full`}
         >
-          Submit
+          Apply
         </button>
         <button
           onClick={onClear}

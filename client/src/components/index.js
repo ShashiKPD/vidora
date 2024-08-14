@@ -22,6 +22,7 @@ import ThumbnailPreview from "./Channel/ThumbnailPreview"
 import ToggleSwitch from "./ToggleSwitch"
 import SidebarOverlay from "./Sidebar/SidebarOverlay"
 import FilterBox from "./FilterBox"
+import SearchBar from "./SearchBar"
 
 export {
   Header,
@@ -47,5 +48,6 @@ export {
   ThumbnailPreview,
   ToggleSwitch,
   SidebarOverlay,
-  FilterBox
+  FilterBox,
+  SearchBar
 }

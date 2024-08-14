@@ -2,15 +2,13 @@ import { useEffect } from "react";
 import { fetchVideos } from "@/store/videoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { VideoCard } from "@/components";
+import { EmptyScreen, LoadingScreen, VideoCard } from "@/components";
 
 const VIDEO_REFRESH_INTERVAL = 1 * 30 * 1000; // 30 seconds in milliseconds
 
 const VideosCardView = () => {
   const dispatch = useDispatch();
-  const { videos, page, error, lastFetched } = useSelector(
-    (state) => state.videos
-  );
+  const { videos, status, lastFetched } = useSelector((state) => state.videos);
   const sidebar = useSelector((state) => state.ui.sidebar);
 
   useEffect(() => {
@@ -24,6 +22,11 @@ const VideosCardView = () => {
       dispatch(fetchVideos());
     }
   }, []);
+
+  if (status === "loading") return <LoadingScreen className={"mt-[300px]"} />;
+
+  if (videos && videos.length === 0)
+    return <EmptyScreen subtext="No videos found" className={"mt-[300px]"} />;
 
   return (
     <div className="flex justify-center">
