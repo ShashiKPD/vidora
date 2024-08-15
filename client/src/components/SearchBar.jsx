@@ -4,25 +4,28 @@ import { useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { useDispatch } from "react-redux";
 import { IoArrowBack } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [backButtonVisible, setBackButtonVisible] = useState(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleQueryChange = (e) => {
     setSearchQuery(e.target.value);
   };
   const handleSearch = () => {
+    navigate("/");
     setBackButtonVisible(true);
     dispatch(setQuery(searchQuery));
-    setSearchQuery("");
     setTimeout(() => {
       dispatch(setQuery(""));
     }, 100);
   };
   const handleBackButton = () => {
     setBackButtonVisible(false);
+    setSearchQuery("");
     dispatch(fetchVideos());
   };
   return (
@@ -46,7 +49,7 @@ const SearchBar = () => {
       <button
         disabled={!searchQuery.trim()}
         onClick={handleSearch}
-        className="bg-slate-400 px-3 sm:px-4 rounded-r-full"
+        className="bg-slate-400 hover:bg-slate-500 hover:text-white px-3 sm:px-4 rounded-r-full"
       >
         <CiSearch className="sm:text-2xl" />
       </button>
