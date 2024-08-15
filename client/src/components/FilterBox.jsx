@@ -60,9 +60,9 @@ const FilterBox = () => {
     <div
       className={`${
         filterBox ? "" : "translate-y-[-110%] absolute"
-      } transition-transform duration-200 ease pt-3 flex font-manrope text-xs sm:text-sm lg:text-base bg-white`}
+      } transition-transform duration-200 ease pt-1 xs:pt-3 flex font-manrope text-xs sm:text-sm lg:text-base bg-white`}
     >
-      <div className="flex px-3 gap-2 flex-wrap">
+      <div className="flex xs:px-3 gap-2 flex-wrap">
         <div className="bg-slate-200  flex justify-center gap-2 py-1 pl-3 pr-1 rounded-full">
           <span className="text-nowrap flex items-center text-slate-500">
             Sort By
