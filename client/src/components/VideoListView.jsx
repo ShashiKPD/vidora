@@ -23,7 +23,6 @@ const VideoListView = ({ liked = false, history = false, playlistId }) => {
 
   useEffect(() => {
     if (history) return;
-    console.log("this happened");
     if (liked && likedVideos) {
       setVideos(likedVideos);
     } else if (!liked && fetchedVideos) {

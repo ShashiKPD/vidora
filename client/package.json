@@ -26,7 +26,8 @@
     "react-router-dom": "^6.25.1",
     "redux-persist": "^6.0.0",
     "tailwind-merge": "^2.4.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vader-sentiment": "^1.1.3"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Comment } from "@/components";
+import { Comment, SentimentIndicator } from "@/components";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchComments } from "@/store/playbackSlice";
@@ -66,7 +66,12 @@ const CommentSection = () => {
 
   return (
     <div>
-      <h2 className="font-semibold text-xl my-2">{comments.length} comments</h2>
+      <div className="flex gap-2 my-2 justify-between items-center">
+        <h2 className="font-semibold sm:text-xl text-nowrap">
+          {comments.length} comments
+        </h2>
+        <SentimentIndicator comments={comments} />
+      </div>
       <div className="flex">
         <img
           src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=126&h=75&dpr=1"

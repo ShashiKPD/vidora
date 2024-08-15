@@ -23,6 +23,7 @@ import ToggleSwitch from "./ToggleSwitch"
 import SidebarOverlay from "./Sidebar/SidebarOverlay"
 import FilterBox from "./FilterBox"
 import SearchBar from "./SearchBar"
+import SentimentIndicator from "./SentimentIndicator"
 
 export {
   Header,
@@ -49,5 +50,6 @@ export {
   ToggleSwitch,
   SidebarOverlay,
   FilterBox,
-  SearchBar
+  SearchBar,
+  SentimentIndicator
 }
