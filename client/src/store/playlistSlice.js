@@ -25,20 +25,22 @@ const playlistSlice = createSlice({
     builder
       .addCase(fetchLikedVideos.pending, (state) => {
         state.status = 'loading'
-        // console.log("Fetching videos...");
+        state.error = null
+        console.log("Fetching liked videos...");
       })
       .addCase(fetchLikedVideos.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.likedVideos = action.payload.data.videos || []
-        // console.log("Videos fetched", action.payload);
+        console.log("Liked Videos fetched", action.payload);
 
       }).addCase(fetchLikedVideos.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
-        console.log("Error while fetching videos", action.payload);
+        console.log("Error while fetching liked videos", action.payload);
       })
       .addCase(fetchUserPlaylists.pending, (state) => {
         state.status = 'loading'
+        state.error = null
         // console.log("Fetching videos...");
       })
       .addCase(fetchUserPlaylists.fulfilled, (state, action) => {
@@ -76,6 +78,7 @@ export const fetchLikedVideos = createAsyncThunk(
         }
       })
       const data = await response.json()
+      if (!data.success) return rejectWithValue(data.message)
       return data;
 
     } catch (error) {
@@ -100,6 +103,7 @@ export const fetchUserPlaylists = createAsyncThunk(
         }
       })
       const data = await response.json()
+      if (!data.success) return rejectWithValue(data.message)
       return data;
 
     } catch (error) {

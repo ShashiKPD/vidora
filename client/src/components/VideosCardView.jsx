@@ -2,13 +2,20 @@ import { useEffect } from "react";
 import { fetchVideos } from "@/store/videoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { EmptyScreen, LoadingScreen, VideoCard } from "@/components";
+import {
+  EmptyScreen,
+  ErrorScreen,
+  LoadingScreen,
+  VideoCard,
+} from "@/components";
 
 const VIDEO_REFRESH_INTERVAL = 1 * 30 * 1000; // 30 seconds in milliseconds
 
 const VideosCardView = () => {
   const dispatch = useDispatch();
-  const { videos, status, lastFetched } = useSelector((state) => state.videos);
+  const { videos, status, lastFetched, error } = useSelector(
+    (state) => state.videos
+  );
   const sidebar = useSelector((state) => state.ui.sidebar);
 
   useEffect(() => {
@@ -22,6 +29,10 @@ const VideosCardView = () => {
       dispatch(fetchVideos());
     }
   }, []);
+
+  if (error) {
+    return <ErrorScreen error={error} />;
+  }
 
   if (status === "loading") return <LoadingScreen className={"mt-[300px]"} />;
 

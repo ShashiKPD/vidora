@@ -16,6 +16,7 @@ import { useState } from "react";
 import { cookingToast } from "@/utils/helper";
 import { toggleFilterBox } from "@/store/uiSlice";
 import { SearchBar } from "..";
+import { FaFilter } from "react-icons/fa6";
 
 const Header = () => {
   const location = useLocation();
@@ -101,9 +102,13 @@ const Header = () => {
             >
               <CiSearch className="text-2xl" />
             </button>
+
             {/* Filter Button */}
             {location.pathname === "/" && (
-              <button onClick={() => dispatch(toggleFilterBox())}>
+              <button
+                onClick={() => dispatch(toggleFilterBox())}
+                className="hover:bg-violet-200 p-1 rounded-full"
+              >
                 <CiFilter className="text-2xl" />
               </button>
             )}

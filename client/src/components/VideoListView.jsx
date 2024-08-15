@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { EmptyScreen, LoadingScreen, VideoCardHorizontal } from "./index";
+import {
+  EmptyScreen,
+  ErrorScreen,
+  LoadingScreen,
+  VideoCardHorizontal,
+} from "./index";
 import { fetchVideos } from "@/store/videoSlice";
 import { fetchLikedVideos } from "@/store/playlistSlice";
 import { getUserWatchHistory } from "@/utils/apis";
@@ -13,11 +18,12 @@ const VideoListView = ({ liked = false, history = false, playlistId }) => {
   const { videos: fetchedVideos, lastFetched } = useSelector(
     (state) => state.videos
   );
-  const { likedVideos } = useSelector((state) => state.playlist);
+  const { likedVideos, error } = useSelector((state) => state.playlist);
   const { accessToken } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (history) return;
+    console.log("this happened");
     if (liked && likedVideos) {
       setVideos(likedVideos);
     } else if (!liked && fetchedVideos) {
@@ -33,6 +39,9 @@ const VideoListView = ({ liked = false, history = false, playlistId }) => {
       (async () => {
         await getUserWatchHistory(accessToken)
           .then((data) => {
+            if (!data) {
+              return;
+            }
             setVideos(data.data);
           })
           .finally(() => {
@@ -49,6 +58,10 @@ const VideoListView = ({ liked = false, history = false, playlistId }) => {
     }
     setIsFetched(true);
   }, []);
+
+  if (error) {
+    return <ErrorScreen error={error} />;
+  }
 
   if (isLoading) return <LoadingScreen />;
 

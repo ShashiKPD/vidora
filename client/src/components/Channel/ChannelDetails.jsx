@@ -83,7 +83,7 @@ const ChannelDetails = () => {
           // src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
           src={userData.avatar}
           alt="Profile image"
-          className="size-16 sm:size-24 md:size-32 lg:size-36 xl:size-40 rounded-full object-cover"
+          className="size-16 flex-shrink-0 sm:size-24 md:size-32 lg:size-36 xl:size-40 rounded-full object-cover"
         />
         <div className="flex flex-col gap-2 justify-center font-manrope w-full">
           <div className="mb-1 sm:mb-3">

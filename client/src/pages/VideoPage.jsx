@@ -8,6 +8,7 @@ import {
   CommentSection,
   LikeAndSubscribe,
   LoadingScreen,
+  ErrorScreen,
 } from "@/components";
 import { formatDate, formatDateToNow } from "@/utils/helper";
 import { fetchVideo } from "@/store/playbackSlice";
@@ -33,6 +34,10 @@ const VideoPage = () => {
   useEffect(() => {
     if (video) setIsLoading(false);
   }, [video]);
+
+  if (error) {
+    return <ErrorScreen error={error} />;
+  }
 
   if (isLoading) {
     return <LoadingScreen className={"mt-[400px]"} />;

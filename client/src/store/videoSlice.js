@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { LOGOUT } from "./actions/authActions";
+import { refreshAccessToken } from "./authSlice";
 
 const initialState = {
   videos: [],
@@ -34,6 +35,7 @@ const videoSlice = createSlice({
     builder
       .addCase(fetchVideos.pending, (state) => {
         state.status = 'loading'
+        state.error = null
         // console.log("Fetching videos...");
       })
       .addCase(fetchVideos.fulfilled, (state, action) => {
@@ -60,34 +62,49 @@ const videoSlice = createSlice({
 
 export const fetchVideos = createAsyncThunk(
   'videos/fetchVideos',
-  async (searchParams, { getState, rejectWithValue }) => {
+  async (searchParams, { getState, dispatch, rejectWithValue }) => {
     const { auth } = getState()
 
     if (!auth.authStatus) {
       return rejectWithValue("User not logged in")
     }
 
-    try {
+    const fetchWithAuth = async (token) => {
       const url = new URL(import.meta.env.VITE_API_BASE_URL + "/videos");
       url.search = new URLSearchParams({ ...searchParams });
-      // console.log(url);
 
-      // const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/videos" + "?sortBy=views&sortType=desc&page=1&limit=50", {
       const response = await fetch(url, {
         headers: {
-          "Authorization": `Bearer ${auth.accessToken}`
+          "Authorization": `Bearer ${token}`
         }
-      })
-      const data = await response.json()
-      if (!data.success) return rejectWithValue(data.message)
-      return data;
+      });
+      return response.json();
+    };
 
+    try {
+      let response = await fetchWithAuth(auth.accessToken);
+
+      if (response.message === 'jwt expired') {
+        // Dispatch the refreshAccessToken thunk and wait for it to complete
+        const refreshResponse = await dispatch(refreshAccessToken()).unwrap();
+        if (!refreshResponse.success) {
+          return rejectWithValue(refreshResponse.message);
+        }
+
+        // Use the new access token
+        response = await fetchWithAuth(refreshResponse.data.accessToken);
+      }
+
+      if (!response.success) {
+        return rejectWithValue(response.message);
+      }
+
+      return response;
     } catch (error) {
-      return rejectWithValue(error.message)
+      return rejectWithValue(error.message);
     }
-
   }
-)
+);
 
 export const { setVideos, resetVideos, setQuery } = videoSlice.actions
 export default videoSlice.reducer
