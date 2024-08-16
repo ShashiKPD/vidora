@@ -14,7 +14,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
   // valid sortBy values: duration, views, publishDate(createdAt)
   if (sortBy) {
-    if (!["duration", "views", "uploadDate"].some((value) => value === sortBy)) {
+    if (!["duration", "views", "createdAt"].some((value) => value === sortBy)) {
       throw new ApiError(400, "Invalid sortBy")
     }
   }

@@ -109,9 +109,7 @@ const RegisterComponent = () => {
                 <input
                   type="text"
                   placeholder="Last Name"
-                  {...register("lastName", {
-                    required: "Last name is required",
-                  })}
+                  {...register("lastName", {})}
                   className="py-2 px-3 rounded-tr-xl bg-slate-200 w-full"
                 />
                 {errors.lastName && (

@@ -13,7 +13,7 @@ const FilterBox = () => {
   const [limit, setLimit] = useState(50);
   const dispatch = useDispatch();
   const searchParams = {
-    sortBy: "views", // "duration" | "views" | "uploadDate"
+    sortBy: "views", // "duration" | "views" | "createdAt"
     sortType: "desc",
     page: 1,
     limit: 50,
@@ -77,9 +77,9 @@ const FilterBox = () => {
               views
             </button>
             <button
-              onClick={() => setSortBy("uploadDate")}
+              onClick={() => setSortBy("createdAt")}
               className={`${
-                sortBy === "uploadDate" ? "bg-slate-500 text-white" : ""
+                sortBy === "createdAt" ? "bg-slate-500 text-white" : ""
               } bg-slate-300 py-1 px-2 rounded-full`}
             >
               date

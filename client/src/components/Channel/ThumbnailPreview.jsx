@@ -22,8 +22,8 @@ const ThumbnailPreview = ({ thumbnailFile, maxSize }) => {
         alt="thumbnail url"
         className="aspect-video w-full object-cover border-2 border-slate-400"
       />
-      <div className="py-3 text-sm line-clamp-2">
-        <p className="">{thumbnailFile.name}</p>
+      <div className="py-3 text-sm">
+        <p className="line-clamp-2">{thumbnailFile.name}</p>
         {/* <p className="text-xs text-slate-400">
           Thumbnail will be cropped to fit 16:9 aspect ratio
         </p> */}
