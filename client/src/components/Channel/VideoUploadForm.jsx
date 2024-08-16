@@ -64,20 +64,20 @@ const VideoUploadForm = () => {
     // submit form
     setIsSubmitting(true);
     toggleUploadingPopup();
-    setTimeout(() => {
-      console.log("video Uploaded");
-      // navigate(`/channel/${username}`)
-      setIsSubmitting(false);
-      setDialogueBoxVisible(false);
-    }, 5000);
-    // await publishVideo(formData, accessToken)
-    //   .then((data) => {
-    //     console.log(data);
-    //   })
-    //   .finally(() => {
-    //     setIsSubmitting(false);
-    //     setDialogueBoxVisible(false);
-    //   });
+    // setTimeout(() => {
+    //   console.log("video Uploaded");
+    //   // navigate(`/channel/${username}`)
+    //   setIsSubmitting(false);
+    //   setDialogueBoxVisible(false);
+    // }, 5000);
+    await publishVideo(formData, accessToken)
+      .then((data) => {
+        console.log(data);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+        setDialogueBoxVisible(false);
+      });
   };
 
   const toggleUploadingPopup = () => {
