@@ -18,18 +18,25 @@ const SearchBar = () => {
   const handleSearch = () => {
     navigate("/");
     setBackButtonVisible(true);
-    dispatch(setQuery(searchQuery));
+    dispatch(setQuery(searchQuery.trim()));
     setTimeout(() => {
       dispatch(setQuery(""));
     }, 100);
   };
+
   const handleBackButton = () => {
     setBackButtonVisible(false);
     setSearchQuery("");
     dispatch(fetchVideos());
   };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      if (searchQuery.trim()) handleSearch();
+    }
+  };
   return (
-    <div className="flex max-w-lg flex-grow max-xs:hidden">
+    <div className="flex max-w-lg flex-grow ">
       {backButtonVisible && (
         <button
           disabled={!backButtonVisible}
@@ -43,13 +50,16 @@ const SearchBar = () => {
       <input
         onChange={handleQueryChange}
         value={searchQuery}
+        onKeyDown={handleKeyDown}
         className="w-full border border-slate-400  placeholder-gray-400 pl-5 pr-3 outline-none py-1 text-sm sm:text-base rounded-full rounded-r-none bg-transparent "
         placeholder="Search"
       />
       <button
         disabled={!searchQuery.trim()}
         onClick={handleSearch}
-        className="bg-slate-400 hover:bg-slate-500 hover:text-white px-3 sm:px-4 rounded-r-full"
+        className={`${
+          searchQuery.trim() === "" ? "" : "hover:bg-slate-500 hover:text-white"
+        }   bg-slate-400   px-3 sm:px-4 rounded-r-full`}
       >
         <CiSearch className="sm:text-2xl" />
       </button>

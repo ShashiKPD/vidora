@@ -79,9 +79,10 @@ const LoginComponent = () => {
           </div>
           <button
             type="submit"
+            disabled={status === "loading"}
             className="w-full py-2 px-3 rounded-xl bg-slate-800 text-white"
           >
-            Login
+            {status === "loading" ? "Logging in.." : "Login"}
           </button>
           {status === "loading" && <p>Submitting...</p>}
           {error && <p>Error: {error}</p>}

@@ -3,25 +3,17 @@ import { logoutAll } from "@/store/actions/authActions";
 import { toggleSidebar } from "@/store/uiSlice";
 import logo from "/assets/logo-color.png";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { IoArrowBack } from "react-icons/io5";
+import { IoCloseOutline } from "react-icons/io5";
 import { CiFilter, CiSearch } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Link,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { cookingToast } from "@/utils/helper";
 import { toggleFilterBox } from "@/store/uiSlice";
 import { SearchBar } from "..";
-import { FaFilter } from "react-icons/fa6";
 
 const Header = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { authStatus, userData } = useSelector((state) => state.auth);
   const [searchPageState, setSearchPageState] = useState(false);
 
@@ -40,25 +32,12 @@ const Header = () => {
 
   if (searchPageState) {
     return (
-      <div className="fixed z-40 top-0 w-full h-full flex justify-center bg-white">
+      <div className="sticky z-40 top-0 py-1 w-full flex justify-center bg-white">
         <div className="h-14 py-3 px-2 sm:px-5 w-full flex justify-center gap-2 sm:gap-5 bg-slate-100">
+          <SearchBar />
           <button onClick={toggleSearchPage} className="flex items-center px-2">
-            <IoArrowBack className="text-2xl" />
+            <IoCloseOutline className="text-3xl" />
           </button>
-          <div className="flex flex-grow justify-center">
-            <div className="flex max-w-96 flex-grow">
-              <input
-                className="w-full border border-slate-400  placeholder-gray-400 pl-3 sm:pl-5 pr-3 outline-none py-1 text-sm sm:text-base rounded-full rounded-r-none bg-transparent "
-                placeholder="Search"
-              />
-              <button
-                onClick={() => cookingToast()}
-                className="bg-slate-400 px-3 sm:px-4 rounded-r-full"
-              >
-                <CiSearch className="sm:text-2xl" />
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     );
@@ -74,23 +53,11 @@ const Header = () => {
           <img className="w-full h-auto" src={logo} alt="" />
         </Link>
       </div>
-      {authStatus ? (
+      {authStatus && (
         // Hidden on screen smaller than "xs"
-        <SearchBar />
-      ) : (
-        // <div className="flex max-w-lg flex-grow max-xs:hidden">
-        //   <input
-        //     className="w-full border border-slate-400  placeholder-gray-400 pl-5 pr-3 outline-none py-1 text-sm sm:text-base rounded-full rounded-r-none bg-transparent "
-        //     placeholder="Search"
-        //   />
-        //   <button
-        //     onClick={() => cookingToast()}
-        //     className="bg-slate-400 px-3 sm:px-4 rounded-r-full"
-        //   >
-        //     <CiSearch className="sm:text-2xl" />
-        //   </button>
-        // </div>
-        <></>
+        <div className="w-full flex justify-center items-center max-xs:hidden">
+          <SearchBar />
+        </div>
       )}
       <div className="flex gap-3 sm:gap-5 relative">
         {authStatus ? (
@@ -117,7 +84,7 @@ const Header = () => {
               // src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=126&h=75&dpr=1"
               src={userData.avatar}
               alt="Profile img"
-              className="size-7 sm:size-8 rounded-full object-cover"
+              className="size-7 sm:size-8 rounded-full object-cover shrink-0"
             />
             <button
               className="text-xs sm:text-sm bg-//[#ae7aff] bg-[#d5d89b] hover:bg-[#e8ebad] text-black px-2 py-1 font-bold text-nowrap shadow-[5px_5px_0px_0px_#4f4e4e] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-100 ease-in-out"
