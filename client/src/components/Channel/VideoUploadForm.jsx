@@ -11,6 +11,7 @@ const VideoUploadForm = () => {
   const { username } = useParams();
   const MAX_VIDEO_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
   const MAX_THUMBNAIL_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+  const [dialogueBoxVisible, setDialogueBoxVisible] = useState(false);
   const [formerror, setFormerror] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
@@ -54,7 +55,6 @@ const VideoUploadForm = () => {
       }
       formData.append("thumbnail", data.thumbnail[0]);
     }
-
     // submit form
     setIsSubmitting(true);
     await publishVideo(formData, accessToken)
@@ -68,14 +68,44 @@ const VideoUploadForm = () => {
       });
   };
 
+  const handleClose = () => {
+    setDialogueBoxVisible(false);
+    navigate(`/channel/${username}`);
+  };
+
   return (
     <div className="bg-black bg-opacity-50 flex justify-center items-center absolute z-30 top-0 left-0 right-0 bottom-0  w-full h-full">
       <div className="bg-white min-h-[90%] max-h-[98%] overflow-y-auto lg:w-[1000px] md:w-[700px] sm:w-[550px] w-96 mx-2 rounded-3xl">
         <div className="flex py-3 pl-5 pr-3 bg-violet-50 rounded-t-3xl">
           <p className="text-3xl w-full">Video Details</p>
-          <button onClick={() => navigate(`/channel/${username}`)}>
+          {/* Close Button */}
+          <button onClick={() => setDialogueBoxVisible(true)}>
             <IoCloseOutline className="text-4xl" />
           </button>
+          {/* Close Dialogue Box */}
+          {dialogueBoxVisible && (
+            <div className="absolute z-10 top-0 left-0 right-0 bottom-0 font-manrope">
+              <div className="bg-black h-full bg-opacity-50 flex justify-center items-center">
+                <div className="bg-white p-4 rounded-lg max-w-[80%]">
+                  <p>Are you sure you want to exit before uploading?</p>
+                  <div className="flex gap-2 mt-4 text-sm">
+                    <button
+                      onClick={() => setDialogueBoxVisible(false)}
+                      className="py-1 w-20 rounded-md bg-slate-700 hover:bg-slate-900 text-white"
+                    >
+                      Continue
+                    </button>
+                    <button
+                      onClick={handleClose}
+                      className="py-1 w-20 rounded-md bg-slate-200 hover:bg-slate-300"
+                    >
+                      Exit
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
@@ -126,7 +156,7 @@ const VideoUploadForm = () => {
 
               <textarea
                 id="description-input"
-                rows="10" // Adjust the number of visible rows
+                rows="6" // Adjust the number of visible rows
                 placeholder="Enter your description here"
                 {...register("description", {
                   maxLength: {
