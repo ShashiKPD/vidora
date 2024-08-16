@@ -10,7 +10,7 @@ const FilterBox = () => {
   const { query } = useSelector((store) => store.videos);
   const [sortBy, setSortBy] = useState("views");
   const [sortType, setSortType] = useState("desc");
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(50);
   const dispatch = useDispatch();
   const searchParams = {
     sortBy: "views", // "duration" | "views" | "uploadDate"

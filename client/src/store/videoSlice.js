@@ -71,7 +71,7 @@ export const fetchVideos = createAsyncThunk(
 
     const fetchWithAuth = async (token) => {
       const url = new URL(import.meta.env.VITE_API_BASE_URL + "/videos");
-      url.search = new URLSearchParams({ ...searchParams });
+      url.search = new URLSearchParams({ ...searchParams, limit: searchParams?.limit || 30 });
 
       const response = await fetch(url, {
         headers: {
