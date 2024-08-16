@@ -24,6 +24,7 @@ import SidebarOverlay from "./Sidebar/SidebarOverlay"
 import FilterBox from "./FilterBox"
 import SearchBar from "./SearchBar"
 import SentimentIndicator from "./SentimentIndicator"
+import VideoUploadingModalPopup from "./Channel/VideoUploadingModalPopup"
 
 export {
   Header,
@@ -51,5 +52,6 @@ export {
   SidebarOverlay,
   FilterBox,
   SearchBar,
-  SentimentIndicator
+  SentimentIndicator,
+  VideoUploadingModalPopup
 }

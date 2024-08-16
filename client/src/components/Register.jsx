@@ -209,7 +209,6 @@ const RegisterComponent = () => {
             className="w-full py-2 px-3 rounded-xl bg-slate-800 text-white"
           >
             {status === "loading" ? "Registering.." : "Register"}
-            Register
           </button>
           {status === "loading" && <p>Submitting...</p>}
           {error && <p>Error: {error}</p>}

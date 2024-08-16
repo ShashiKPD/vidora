@@ -1,6 +1,11 @@
 import { useForm } from "react-hook-form";
 import { IoCloseOutline, IoCloudUpload } from "react-icons/io5";
-import { ThumbnailPreview, ToggleSwitch, VideoPreview } from "..";
+import {
+  ThumbnailPreview,
+  ToggleSwitch,
+  VideoPreview,
+  VideoUploadingModalPopup,
+} from "..";
 import { FaPhotoVideo } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
@@ -12,6 +17,7 @@ const VideoUploadForm = () => {
   const MAX_VIDEO_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
   const MAX_THUMBNAIL_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
   const [dialogueBoxVisible, setDialogueBoxVisible] = useState(false);
+  const [uploadingPopup, setUploadingPopup] = useState(false);
   const [formerror, setFormerror] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
@@ -57,6 +63,13 @@ const VideoUploadForm = () => {
     }
     // submit form
     setIsSubmitting(true);
+    toggleUploadingPopup();
+    // setTimeout(() => {
+    //   console.log("video Uploaded");
+    //   // navigate(`/channel/${username}`)
+    //   setIsSubmitting(false);
+    //   setDialogueBoxVisible(false);
+    // }, 5000);
     await publishVideo(formData, accessToken)
       .then((data) => {
         if (!data.success) {
@@ -65,9 +78,15 @@ const VideoUploadForm = () => {
       })
       .finally(() => {
         setIsSubmitting(false);
+        setDialogueBoxVisible(false);
       });
   };
-
+  const toggleUploadingPopup = () => {
+    setUploadingPopup((prev) => !prev);
+  };
+  const toggleDialogueBox = () => {
+    setDialogueBoxVisible((prev) => !prev);
+  };
   const handleClose = () => {
     setDialogueBoxVisible(false);
     navigate(`/channel/${username}`);
@@ -79,18 +98,18 @@ const VideoUploadForm = () => {
         <div className="flex py-3 pl-5 pr-3 bg-violet-50 rounded-t-3xl">
           <p className="text-3xl w-full">Video Details</p>
           {/* Close Button */}
-          <button onClick={() => setDialogueBoxVisible(true)}>
+          <button onClick={toggleDialogueBox}>
             <IoCloseOutline className="text-4xl" />
           </button>
           {/* Close Dialogue Box */}
           {dialogueBoxVisible && (
-            <div className="absolute z-10 top-0 left-0 right-0 bottom-0 font-manrope">
+            <div className="absolute z-20 top-0 left-0 right-0 bottom-0 font-manrope">
               <div className="bg-black h-full bg-opacity-50 flex justify-center items-center">
                 <div className="bg-white p-4 rounded-lg max-w-[80%]">
                   <p>Are you sure you want to exit before uploading?</p>
                   <div className="flex gap-2 mt-4 text-sm">
                     <button
-                      onClick={() => setDialogueBoxVisible(false)}
+                      onClick={toggleDialogueBox}
                       className="py-1 w-20 rounded-md bg-slate-700 hover:bg-slate-900 text-white"
                     >
                       Continue
@@ -107,6 +126,15 @@ const VideoUploadForm = () => {
             </div>
           )}
         </div>
+        {/* Uploading modal popup */}
+        {uploadingPopup && (
+          <VideoUploadingModalPopup
+            videoFile={videoFile[0]}
+            handleClose={handleClose}
+            toggleDialogueBox={toggleDialogueBox}
+            isSubmitting={isSubmitting}
+          />
+        )}
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
           className="p-4 flex flex-col w-full font-manrope gap-3 justify-between"

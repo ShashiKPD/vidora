@@ -102,7 +102,7 @@ const LikeAndSubscribe = () => {
               <FaCircleCheck className="text-xs mt-[3px] text-gray-600" />
             </div>
             <p className="leading-none text-sm truncate">
-              {subscriberCount} subscribers
+              {subscriberCount || 0} subscribers
             </p>
           </div>
         </div>
