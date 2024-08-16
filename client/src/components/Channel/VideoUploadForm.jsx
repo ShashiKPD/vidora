@@ -25,6 +25,8 @@ const VideoUploadForm = () => {
   const navigate = useNavigate();
   const videoFile = watch("video");
   const thumbnailFile = watch("thumbnail");
+  const titleLength = watch("title")?.trim().length || 0;
+  const descriptionLength = watch("description")?.trim().length || 0;
 
   const handleFormSubmit = async (data) => {
     const formData = new FormData();
@@ -81,36 +83,62 @@ const VideoUploadForm = () => {
         >
           <div className="flex flex-col md:flex-row gap-5 font-manrope">
             <div className="w-full h-full">
-              <label htmlFor="title-input" className="block text-gray-700">
-                Title:
+              <label
+                htmlFor="title-input"
+                className="text-gray-700 flex justify-between"
+              >
+                Title:{" "}
+                <span
+                  className={`${titleLength > 100 && "text-red-500"} text-sm`}
+                >{`${titleLength}/100 `}</span>
               </label>
               <textarea
                 id="title-input"
-                // value={description}
-                // onChange={handleChange}
-                rows="2" // Adjust the number of visible rows
-                {...register("title", { required: "Title is required" })}
-                className="w-full border bg-slate-100 border-gray-300 p-2 rounded"
                 placeholder="Enter your title here"
+                rows="2" // Adjust the number of visible rows
+                {...register("title", {
+                  required: "Title is required",
+                  maxLength: {
+                    value: 100, // Max characters
+                    message: "Maximum length is 100 characters",
+                  },
+                })}
+                className={` ${
+                  titleLength > 100
+                    ? "focus:outline-red-500 outline-red-500 border-none outline-2"
+                    : "border-gray-300 border"
+                }  w-full resize-none overflow-auto bg-slate-100 p-2 rounded-xl`}
               />
               {errors.title && (
                 <p className="text-red-500 text-sm">{errors.title.message}</p>
               )}
               <label
                 htmlFor="description-input"
-                className="block text-gray-700"
+                className="text-gray-700 flex justify-between"
               >
-                Description:
+                Description:{" "}
+                <span
+                  className={`${
+                    descriptionLength > 5000 && "text-red-500"
+                  } text-sm`}
+                >{`${descriptionLength}/5000 `}</span>
               </label>
 
               <textarea
                 id="description-input"
-                // value={description}
-                // onChange={handleChange}
-                rows="5" // Adjust the number of visible rows
-                {...register("description", {})}
-                className="w-full border border-gray-300 p-2 bg-slate-100 rounded-xl"
+                rows="10" // Adjust the number of visible rows
                 placeholder="Enter your description here"
+                {...register("description", {
+                  maxLength: {
+                    value: 5000, // Max characters
+                    message: "Maximum length is 5000 characters",
+                  },
+                })}
+                className={` ${
+                  descriptionLength > 5000
+                    ? "focus:outline-red-500 outline-red-500 border-none outline-2"
+                    : "border-gray-300 border"
+                }  w-full resize-none overflow-auto bg-slate-100 p-2 rounded-xl`}
               />
               {errors.description && (
                 <p className="text-red-500 text-sm">

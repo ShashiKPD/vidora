@@ -98,12 +98,13 @@ const authSlice = createSlice({
       }).addCase(refreshAccessToken.rejected, (state, action) => {
         state.status = "failed"
         state.error = action.payload
-        console.log("Error while trying to refresh access token: ", action.payload)
         state.authStatus = false
         state.userData = null
         state.accessToken = null
         state.refreshToken = null
         state.error = null
+        console.log("Error while trying to refresh access token: ", action.payload)
+        enqueueSnackbar("Failed to refresh access token. Please login again", { autoHideDuration: 5000, variant: "error" })
         console.log("User logged out")
       })
   }
