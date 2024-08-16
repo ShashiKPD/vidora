@@ -89,7 +89,9 @@ const VideoPage = () => {
         {/* Video Description */}
         <div className="relative bg-slate-200 p-4 rounded-2xl">
           <div
-            className={`line-clamp-2 ${!isClamped ? "line-clamp-none" : ""}`}
+            className={`line-clamp-2 whitespace-pre-wrap ${
+              !isClamped ? "line-clamp-none" : ""
+            }`}
           >
             <p className="text-slate-700 text-base truncate font-semibold">
               {views} Views<span className="seperator-dot"></span>
