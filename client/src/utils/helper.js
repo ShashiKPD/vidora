@@ -20,6 +20,17 @@ function publicIdFromCloudinaryUrl(url) {
   return publicId
 }
 
+const formatSeconds = (totalSeconds) => {
+  const days = Math.floor(totalSeconds / (24 * 3600));
+  const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  // Pad single-digit numbers with leading zeros
+  const pad = (num) => num.toString().padStart(2, '0');
+  return `${days ? `${pad(days)}:` : ""}${hours ? `${pad(hours)}:` : ""}${pad(minutes)}:${pad(seconds)}`;
+};
+
 const cookingToast = (message = "This functionality is cooking 🍚") => {
   enqueueSnackbar(message, { variant: 'normal' });
 }
@@ -44,4 +55,4 @@ const getSentiment = (comments) => {
   // {neg: 0.0, neu: 0.299, pos: 0.701, compound: 0.8545}
 }
 
-export { formatDate, formatDateToNow, publicIdFromCloudinaryUrl, cookingToast, getSentiment }
+export { formatDate, formatDateToNow, publicIdFromCloudinaryUrl, formatSeconds, cookingToast, getSentiment }

@@ -1,7 +1,7 @@
 import { formatDistanceToNow } from "date-fns";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaCircleCheck, FaLessThan } from "react-icons/fa6";
-import { cookingToast, formatDateToNow } from "@/utils/helper";
+import { cookingToast, formatDateToNow, formatSeconds } from "@/utils/helper";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -10,6 +10,7 @@ const VideoCardHorizontal = ({
   index = 0,
 }) => {
   const formatedDateToNow = formatDateToNow(createdAt);
+  const formattedDuration = formatSeconds(Math.round(duration));
   const location = useLocation();
   const [isOnPlaylist, setIsOnPlaylist] = useState(false);
   const [notOnWatchPage, setNotOnWatchPage] = useState(false);
@@ -32,15 +33,18 @@ const VideoCardHorizontal = ({
           </Link>
         )}
         <div className="flex flex-grow">
-          <Link to={`/watch/${_id}`} className="pr-2 py-1">
+          <Link to={`/watch/${_id}`} className="pr-2 py-1 relative">
             <img
               // src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
               src={thumbnail}
               alt=""
               className="max-w-32 sm:max-w-40 aspect-video object-cover rounded-xl"
             />
+            {/* duration */}
+            <div className="absolute bottom-2 right-3 p-1 rounded-lg text-xs bg-black bg-opacity-60 text-white ">
+              {formattedDuration}
+            </div>
           </Link>
-
           <div
             className={`${
               notOnWatchPage ? "" : "lg:max-w-56"

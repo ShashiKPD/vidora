@@ -1,6 +1,6 @@
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaCircleCheck } from "react-icons/fa6";
-import { cookingToast, formatDateToNow } from "@/utils/helper";
+import { cookingToast, formatDateToNow, formatSeconds } from "@/utils/helper";
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
@@ -9,6 +9,7 @@ const VideoCard = ({
 }) => {
   const formattedDate = formatDateToNow(createdAt);
   const [isAtChannel, setIsAtChannel] = useState(false);
+  const formattedDuration = formatSeconds(Math.round(duration));
 
   useEffect(() => {
     // Not rendering Owner details for channel page
@@ -23,13 +24,17 @@ const VideoCard = ({
   return (
     <>
       <div className="flex flex-col max-w-96">
-        <Link to={`/watch/${_id}`}>
+        <Link to={`/watch/${_id}`} className="relative">
           <img
             // src="https://images.pexels.com/photos/1115816/pexels-photo-1115816.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
             src={thumbnail}
             alt=""
             className="w-auto aspect-video object-cover rounded-xl"
           />
+          {/* duration */}
+          <div className="absolute bottom-2 right-2 p-1 rounded-lg text-xs bg-black bg-opacity-60 text-white ">
+            {formattedDuration}
+          </div>
         </Link>
         <div className="flex justify-around">
           {/* This doesn't render in channel page */}
