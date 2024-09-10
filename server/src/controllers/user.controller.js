@@ -1,5 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { User } from "../models/user.model.js";
+import { Video } from "../models/video.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
@@ -437,6 +438,13 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 
 const getWatchHistory = asyncHandler(async (req, res) => {
 
+// Fetch user with their watchHistory
+const currUser = await User.findById(req?.user._id).populate('watchHistory').select('watchHistory');
+
+  if (!currUser) {
+    throw new ApiError(404, "Invalid user")
+  }
+
   const user = await User.aggregate([
     {
       $match: {
@@ -463,20 +471,21 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                     username: 1,
                     avatar: 1
                   }
-                },
-                {
-                  $addFields: {
-                    ownerDetails: {
-                      $first: "$ownerDetails"
-                    }
-                  }
                 }
               ]
             }
           },
           {
             $unwind: "$ownerDetails"
-          }
+          },
+          {
+            $project: {
+              isPublished: 0,
+              owner: 0,
+              __v: 0,
+              
+            }
+          },
         ]
       }
     },
@@ -487,10 +496,16 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     // }// to this line
   ])
 
+  const orderedWatchHistory = [];
+  currUser.watchHistory.map((vid) => {
+    orderedWatchHistory.push(user[0].watchHistory.find((video) => video._id.toString() === vid._id.toString()))
+  });
+  // console.log(orderedWatchHistory)
+
   return res
     .status(200)
     .json(
-      new ApiResponse(200, user[0].watchHistory, "Watch history fetched successfully")
+      new ApiResponse(200, orderedWatchHistory, "Watch history fetched successfully")
     )
 })
 
